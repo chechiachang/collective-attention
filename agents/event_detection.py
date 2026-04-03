@@ -148,9 +148,7 @@ class EventDetectionAgent:
             rss_events = self._ingest_rss(self.rss_url)
             # Improvement #4 – keyword-overlap deduplication
             # Build a flat set of all seed keywords for quick overlap check
-            seed_keyword_sets = [
-                {kw.lower() for kw in e.keywords} for e in events
-            ]
+            seed_keyword_sets = [{kw.lower() for kw in e.keywords} for e in events]
             for e in rss_events:
                 if self._is_duplicate(e, events, seed_keyword_sets):
                     logger.debug(

@@ -152,8 +152,12 @@ def _print_results(events: List[Event]) -> None:
     width = 62
     print()
     print("┌" + "─" * width + "┐")
-    print(f"│{'  TOP ' + str(len(events)) + ' EVENTS – COLLECTIVE ATTENTION (TAIWAN)':^{width}}│")
-    print(f"│{'  Ranked by: log(wiki_views+1) + log(news_count+1) + search_score':^{width}}│")
+    print(
+        f"│{'  TOP ' + str(len(events)) + ' EVENTS – COLLECTIVE ATTENTION (TAIWAN)':^{width}}│"
+    )
+    print(
+        f"│{'  Ranked by: log(wiki_views+1) + log(news_count+1) + search_score':^{width}}│"
+    )
     print("├" + "─" * width + "┤")
 
     for rank, event in enumerate(events, 1):
@@ -219,7 +223,9 @@ def _save_markdown(events: List[Event], path: str, is_mock: bool = False) -> Non
     lines: List[str] = []
     lines.append("# Collective Attention – Taiwan Events Report")
     lines.append("")
-    lines.append(f"**Generated:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}")
+    lines.append(
+        f"**Generated:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}"
+    )
     if is_mock:
         lines.append("")
         lines.append(
@@ -273,9 +279,7 @@ def _save_markdown(events: List[Event], path: str, is_mock: bool = False) -> Non
         if event.canonical_wiki_title:
             lines.append(f"**Wikipedia:** {event.canonical_wiki_title}")
             if event.wiki_redirect_pages:
-                lines.append(
-                    f"**Redirects:** {', '.join(event.wiki_redirect_pages)}"
-                )
+                lines.append(f"**Redirects:** {', '.join(event.wiki_redirect_pages)}")
             lines.append("")
         lines.append(f"**Score:** `{event.score:.4f}`")
         lines.append("")
@@ -290,9 +294,7 @@ def _save_markdown(events: List[Event], path: str, is_mock: bool = False) -> Non
             lines.append(
                 f"| Wikipedia pageviews | {wiki_raw} | {sb.wiki_component:.4f} |"
             )
-            lines.append(
-                f"| News articles | {news_raw} | {sb.news_component:.4f} |"
-            )
+            lines.append(f"| News articles | {news_raw} | {sb.news_component:.4f} |")
             lines.append(
                 f"| Google Trends score | {search_raw} | {sb.search_component:.4f} |"
             )

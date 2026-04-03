@@ -2,16 +2,18 @@
 
 ## Mandatory checks before completing any task
 
-Before marking a task as done, **all** of the following must pass locally:
+Before marking a task as done, run the following in order:
 
 ```bash
-uv run black --check .          # formatting
+uv run black .                  # auto-format (must run, not just --check)
 uv run ruff check .             # linting
 uv run mypy .                   # type checking
 uv run pytest                   # full test suite (includes frontend tests)
 ```
 
-Run these in the order above.  Fix any failure before proceeding.
+**Always run `uv run black .` (not `--check`) to auto-format code** before
+committing.  The CI `fmt` job runs `black --check` and will fail if any file
+is not formatted.  Running the formatter locally prevents that.
 
 ## Project overview
 
