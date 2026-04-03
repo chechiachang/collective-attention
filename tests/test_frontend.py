@@ -170,3 +170,57 @@ class TestSlider:
 
     def test_slider_calls_on_n_change(self, html_content):
         assert "onNChange" in html_content
+
+
+class TestTimelineConsistency:
+    """Tests that verify timeline and ranking views show a consistent number of events."""
+
+    def test_switch_view_uses_explicit_display_block(self, html_content):
+        """switchView must set display='block' explicitly, not '' (empty string).
+
+        Using '' removes the inline style and causes the CSS ``#timeline-view { display: none }``
+        rule to take effect, which keeps the timeline hidden even after clicking the tab.
+        """
+        import re
+
+        match = re.search(
+            r"function switchView\b.*?^}",
+            html_content,
+            re.MULTILINE | re.DOTALL,
+        )
+        assert match, "function switchView not found"
+        code = match.group(0)
+        assert "? 'block' : 'none'" in code or '? "block" : "none"' in code, (
+            "switchView must use 'block' (not empty string) to show views; "
+            "setting display='' reverts to the CSS display:none rule"
+        )
+
+    def test_render_calls_both_ranking_and_timeline(self, html_content):
+        """render() must call both renderRanking and renderTimeline with the same events."""
+        import re
+
+        match = re.search(
+            r"function render\b.*?^}",
+            html_content,
+            re.MULTILINE | re.DOTALL,
+        )
+        assert match, "function render not found"
+        code = match.group(0)
+        assert "renderRanking" in code, "render() must call renderRanking"
+        assert "renderTimeline" in code, "render() must call renderTimeline"
+
+    def test_render_timeline_handles_missing_start_date(self, html_content):
+        """renderTimeline must not silently drop events without a start_date."""
+        import re
+
+        match = re.search(
+            r"function renderTimeline\b.*?^}",
+            html_content,
+            re.MULTILINE | re.DOTALL,
+        )
+        assert match, "function renderTimeline not found"
+        code = match.group(0)
+        # Events without start_date should be grouped (e.g. under '?') not discarded
+        assert (
+            "start_date" in code
+        ), "renderTimeline must handle events with no start_date"

@@ -397,8 +397,8 @@ function renderTimeline(events) {
    ──────────────────────────────────────────────────────────────────────── */
 function switchView(view) {
   currentView = view;
-  document.getElementById('ranking-view').style.display  = (view === 'ranking')  ? '' : 'none';
-  document.getElementById('timeline-view').style.display = (view === 'timeline') ? '' : 'none';
+  document.getElementById('ranking-view').style.display  = (view === 'ranking')  ? 'block' : 'none';
+  document.getElementById('timeline-view').style.display = (view === 'timeline') ? 'block' : 'none';
   document.getElementById('btn-ranking').classList.toggle('active',  view === 'ranking');
   document.getElementById('btn-timeline').classList.toggle('active', view === 'timeline');
 }
