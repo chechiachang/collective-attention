@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Tuple
 
 import pytest
 
-FRONTEND_PATH = Path(__file__).parent.parent / "frontend" / "index.html"
+FRONTEND_PATH = Path(__file__).parent.parent / "docs" / "index.html"
 
 
 @pytest.fixture(scope="module")
