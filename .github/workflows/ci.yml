@@ -2,9 +2,15 @@ name: CI
 
 on:
   push:
-    branches: ["**"]
+    branches: ["main"]
   pull_request:
     branches: ["**"]
+
+# Cancel in-progress runs for the same branch/PR to avoid duplicate runs
+# when a push and a pull_request event are triggered at the same time.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   fmt:
@@ -50,3 +56,15 @@ jobs:
           python-version: "3.11"
       - run: uv sync --all-extras
       - run: uv run pytest
+
+  frontend-test:
+    name: Frontend validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.11"
+      - run: uv sync --all-extras
+      - name: Validate frontend/index.html structure
+        run: uv run pytest tests/test_frontend.py -v
