@@ -9,6 +9,7 @@ Endpoints:
     GET /events/{event_id}   – single event detail
     GET /health              – health check
 """
+
 from __future__ import annotations
 
 import logging
@@ -88,7 +89,9 @@ def health() -> dict:
 
 @app.get("/events/top")
 def get_top_events(
-    n: int = Query(default=10, ge=1, le=50, description="Number of top events to return"),
+    n: int = Query(
+        default=10, ge=1, le=50, description="Number of top events to return"
+    ),
 ) -> JSONResponse:
     """
     Return the top-N ranked events with their score breakdown.

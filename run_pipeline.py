@@ -13,6 +13,7 @@ This script:
   6. Computes final explainable score
   7. Prints top-10 events to stdout
 """
+
 from __future__ import annotations
 
 import argparse

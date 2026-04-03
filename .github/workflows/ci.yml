@@ -7,29 +7,46 @@ on:
     branches: ["**"]
 
 jobs:
-  ci:
-    name: fmt / lint / type-check / test
+  fmt:
+    name: Format check (black)
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v5
         with:
           python-version: "3.11"
+      - run: uv sync --all-extras
+      - run: uv run black --check .
 
-      - name: Install dependencies
-        run: uv sync --all-extras
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.11"
+      - run: uv sync --all-extras
+      - run: uv run ruff check .
 
-      - name: Format check (black)
-        run: uv run black --check .
+  type-check:
+    name: Type check (mypy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.11"
+      - run: uv sync --all-extras
+      - run: uv run mypy .
 
-      - name: Lint (ruff)
-        run: uv run ruff check .
-
-      - name: Type check (mypy)
-        run: uv run mypy .
-
-      - name: Test (pytest)
-        run: uv run pytest
+  test:
+    name: Test (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.11"
+      - run: uv sync --all-extras
+      - run: uv run pytest

@@ -10,6 +10,7 @@ Formula (no black-box ML):
 Delegates the actual arithmetic to core.models.compute_score so the
 formula stays in one place.
 """
+
 from __future__ import annotations
 
 import logging

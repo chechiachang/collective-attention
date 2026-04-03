@@ -6,11 +6,11 @@ Fetches total pageviews for an event's canonical Wikipedia page
 
 API docs: https://wikimedia.org/api/rest_v1/#/Pageviews%20data
 """
+
 from __future__ import annotations
 
 import logging
 from datetime import date, timedelta
-from typing import Optional
 
 import requests
 

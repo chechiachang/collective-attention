@@ -4,6 +4,7 @@ Pipeline orchestrator for the Collective Attention System.
 Wires all agents together and drives the end-to-end flow:
   Ingestion → Event Detection → Event Identity → Signal Aggregation → Scoring
 """
+
 from __future__ import annotations
 
 import logging
@@ -78,31 +79,32 @@ class Pipeline:
         for event in events:
             try:
                 self.wiki_signal.fetch(event)
-                logger.info(
-                    "  [%s] wiki_views=%d", event.title, event.signals.wiki_views
-                )
+                if event.signals is not None:
+                    logger.info(
+                        "  [%s] wiki_views=%d", event.title, event.signals.wiki_views
+                    )
             except Exception as exc:  # noqa: BLE001
                 logger.warning("  Wiki signal failed for '%s': %s", event.title, exc)
 
             try:
                 self.news_signal.fetch(event)
-                logger.info(
-                    "  [%s] news_count=%d", event.title, event.signals.news_count
-                )
+                if event.signals is not None:
+                    logger.info(
+                        "  [%s] news_count=%d", event.title, event.signals.news_count
+                    )
             except Exception as exc:  # noqa: BLE001
                 logger.warning("  News signal failed for '%s': %s", event.title, exc)
 
             try:
                 self.search_signal.fetch(event)
-                logger.info(
-                    "  [%s] search_score=%.2f",
-                    event.title,
-                    event.signals.search_score,
-                )
+                if event.signals is not None:
+                    logger.info(
+                        "  [%s] search_score=%.2f",
+                        event.title,
+                        event.signals.search_score,
+                    )
             except Exception as exc:  # noqa: BLE001
-                logger.warning(
-                    "  Search signal failed for '%s': %s", event.title, exc
-                )
+                logger.warning("  Search signal failed for '%s': %s", event.title, exc)
 
         # 4. Scoring
         logger.info("Step 4/5 – Scoring")

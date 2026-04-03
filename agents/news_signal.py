@@ -9,10 +9,10 @@ URL is provided it downloads the feed and counts articles whose titles
 contain any of the event's keywords.  A fallback stub count is used
 when no feed URL is configured or the request fails.
 """
+
 from __future__ import annotations
 
 import logging
-from datetime import date
 from typing import List, Optional
 
 import requests
@@ -26,7 +26,7 @@ REQUEST_TIMEOUT = 10  # seconds
 # Public RSS feeds that cover Taiwan news (Chinese)
 DEFAULT_RSS_FEEDS: List[str] = [
     "https://www.cna.com.tw/rss/aall.aspx",  # CNA (Central News Agency)
-    "https://news.ltn.com.tw/rss/all.xml",   # Liberty Times
+    "https://news.ltn.com.tw/rss/all.xml",  # Liberty Times
 ]
 
 

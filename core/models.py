@@ -1,6 +1,7 @@
 """
 Core data models for the Collective Attention System.
 """
+
 from __future__ import annotations
 
 import math

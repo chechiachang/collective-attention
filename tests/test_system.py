@@ -4,19 +4,25 @@ Tests for the Collective Attention System.
 These tests avoid any real network calls by using mocks/stubs, so the
 suite is fully offline and fast.
 """
+
 from __future__ import annotations
 
 import math
 from datetime import date
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
+from fastapi.testclient import TestClient
 
-# ---------------------------------------------------------------------------
-# core.models
-# ---------------------------------------------------------------------------
-
+import api.main as api_main
+from agents.event_detection import SEED_EVENTS, EventDetectionAgent
+from agents.event_identity import EventIdentityAgent
+from agents.news_signal import NewsSignalAgent
+from agents.scoring import ScoringAgent
+from agents.wiki_signal import WikiSignalAgent
+from api.main import app
 from core.models import Event, ScoreBreakdown, Signals, compute_score
+from core.pipeline import Pipeline
 
 
 class TestComputeScore:
@@ -26,9 +32,7 @@ class TestComputeScore:
         assert bd.wiki_component == pytest.approx(math.log(1001), rel=1e-6)
         assert bd.news_component == pytest.approx(math.log(51), rel=1e-6)
         assert bd.search_component == pytest.approx(60.0, rel=1e-6)
-        assert bd.total == pytest.approx(
-            math.log(1001) + math.log(51) + 60.0, rel=1e-6
-        )
+        assert bd.total == pytest.approx(math.log(1001) + math.log(51) + 60.0, rel=1e-6)
 
     def test_zero_signals(self):
         s = Signals(event_id="e0")
@@ -39,7 +43,9 @@ class TestComputeScore:
         assert bd.total == pytest.approx(0.0, abs=1e-9)
 
     def test_explanation_high_signals(self):
-        s = Signals(event_id="e2", wiki_views=200_000, news_count=200, search_score=80.0)
+        s = Signals(
+            event_id="e2", wiki_views=200_000, news_count=200, search_score=80.0
+        )
         bd = compute_score(s)
         explanation = bd.explanation.lower()
         assert "wikipedia" in explanation
@@ -74,7 +80,9 @@ class TestEvent:
         assert d["score"] == 0.0
 
     def test_to_dict_with_signals_and_breakdown(self):
-        signals = Signals(event_id="abc", wiki_views=500, news_count=10, search_score=25.0)
+        signals = Signals(
+            event_id="abc", wiki_views=500, news_count=10, search_score=25.0
+        )
         bd = compute_score(signals)
         event = Event(
             id="abc",
@@ -92,8 +100,6 @@ class TestEvent:
 # ---------------------------------------------------------------------------
 # agents.event_detection
 # ---------------------------------------------------------------------------
-
-from agents.event_detection import EventDetectionAgent, SEED_EVENTS
 
 
 class TestEventDetectionAgent:
@@ -135,13 +141,9 @@ class TestEventDetectionAgent:
 # agents.event_identity
 # ---------------------------------------------------------------------------
 
-from agents.event_identity import EventIdentityAgent
-
 
 class TestEventIdentityAgent:
     def _make_event(self, title="Test", keywords=None):
-        from core.models import Signals
-
         eid = "test123"
         return Event(
             id=eid,
@@ -159,13 +161,7 @@ class TestEventIdentityAgent:
         requests_mock.get(
             "https://zh.wikipedia.org/w/api.php",
             [
-                {
-                    "json": {
-                        "query": {
-                            "search": [{"title": "花蓮地震 (2018年)"}]
-                        }
-                    }
-                },
+                {"json": {"query": {"search": [{"title": "花蓮地震 (2018年)"}]}}},
                 {
                     "json": {
                         "query": {
@@ -206,13 +202,9 @@ class TestEventIdentityAgent:
 # agents.wiki_signal
 # ---------------------------------------------------------------------------
 
-from agents.wiki_signal import WikiSignalAgent
-
 
 class TestWikiSignalAgent:
     def _make_event_with_canonical(self, title, canonical, redirects=None):
-        from core.models import Signals
-
         eid = "wikitest"
         return Event(
             id=eid,
@@ -262,8 +254,6 @@ class TestWikiSignalAgent:
         assert event.signals.wiki_views == 0
 
     def test_fetch_no_canonical_skips(self):
-        from core.models import Signals
-
         agent = WikiSignalAgent(lang="zh")
         event = Event(
             id="x",
@@ -278,13 +268,9 @@ class TestWikiSignalAgent:
 # agents.news_signal
 # ---------------------------------------------------------------------------
 
-from agents.news_signal import NewsSignalAgent
-
 
 class TestNewsSignalAgent:
     def _make_event(self, title, keywords):
-        from core.models import Signals
-
         eid = "newstest"
         return Event(
             id=eid,
@@ -309,9 +295,7 @@ class TestNewsSignalAgent:
         assert event.signals.news_count == 2
 
     def test_fallback_count_on_failure(self, mocker):
-        agent = NewsSignalAgent(
-            rss_feeds=["http://bad.feed/rss"], fallback_count=42
-        )
+        agent = NewsSignalAgent(rss_feeds=["http://bad.feed/rss"], fallback_count=42)
         mocker.patch("feedparser.parse", side_effect=Exception("network error"))
 
         event = self._make_event("Test", ["keyword"])
@@ -329,15 +313,13 @@ class TestNewsSignalAgent:
 # agents.scoring
 # ---------------------------------------------------------------------------
 
-from agents.scoring import ScoringAgent
-
 
 class TestScoringAgent:
     def test_score_sets_total_and_breakdown(self):
-        from core.models import Signals
-
         agent = ScoringAgent()
-        signals = Signals(event_id="s1", wiki_views=10000, news_count=50, search_score=40.0)
+        signals = Signals(
+            event_id="s1", wiki_views=10000, news_count=50, search_score=40.0
+        )
         event = Event(id="s1", title="Test", signals=signals)
         agent.score(event)
 
@@ -346,11 +328,11 @@ class TestScoringAgent:
         assert event.score == pytest.approx(event.score_breakdown.total, rel=1e-6)
 
     def test_score_all_returns_sorted(self):
-        from core.models import Signals
-
         agent = ScoringAgent()
         e1 = Event(id="a", title="A", signals=Signals(event_id="a", wiki_views=100))
-        e2 = Event(id="b", title="B", signals=Signals(event_id="b", wiki_views=1_000_000))
+        e2 = Event(
+            id="b", title="B", signals=Signals(event_id="b", wiki_views=1_000_000)
+        )
         ranked = agent.score_all([e1, e2])
         assert ranked[0].id == "b"
         assert ranked[1].id == "a"
@@ -366,8 +348,6 @@ class TestScoringAgent:
 # ---------------------------------------------------------------------------
 # core.pipeline
 # ---------------------------------------------------------------------------
-
-from core.pipeline import Pipeline
 
 
 class TestPipeline:
@@ -409,8 +389,6 @@ class TestPipeline:
         )
 
     def _make_events(self, n=3):
-        from core.models import Signals
-
         events = []
         for i in range(n):
             eid = f"e{i}"
@@ -450,21 +428,14 @@ class TestPipeline:
 # api.main (FastAPI)
 # ---------------------------------------------------------------------------
 
-from fastapi.testclient import TestClient
-
 
 class TestAPI:
     def _client_with_events(self, events):
         """Build a TestClient with pre-populated _ranked_events."""
-        import api.main as api_module
-
-        api_module._ranked_events = events
-        client = TestClient(api_module.app)
-        return client
+        api_main._ranked_events = events
+        return TestClient(app)
 
     def _make_scored_events(self, n=5):
-        from core.models import Signals
-
         events = []
         for i in range(n):
             eid = f"api{i}"
@@ -481,10 +452,8 @@ class TestAPI:
         return sorted(events, key=lambda e: e.score, reverse=True)
 
     def test_health(self):
-        import api.main as api_module
-
-        api_module._ranked_events = []
-        client = TestClient(api_module.app)
+        api_main._ranked_events = []
+        client = TestClient(app)
         response = client.get("/health")
         assert response.status_code == 200
         assert response.json()["status"] == "ok"
@@ -527,9 +496,7 @@ class TestAPI:
         assert response.status_code == 404
 
     def test_top_events_503_when_none(self):
-        import api.main as api_module
-
-        api_module._ranked_events = None
-        client = TestClient(api_module.app)
+        api_main._ranked_events = None
+        client = TestClient(app)
         response = client.get("/events/top")
         assert response.status_code == 503

@@ -8,10 +8,10 @@ Uses the Wikipedia REST API (no API key required):
   https://en.wikipedia.org/api/rest_v1/
   https://zh.wikipedia.org/api/rest_v1/
 """
+
 from __future__ import annotations
 
 import logging
-import urllib.parse
 from typing import List, Optional
 
 import requests
@@ -75,9 +75,7 @@ class EventIdentityAgent:
     # Private helpers
     # ------------------------------------------------------------------
 
-    def _resolve_title(
-        self, query: str, lang: str
-    ) -> tuple[Optional[str], List[str]]:
+    def _resolve_title(self, query: str, lang: str) -> tuple[Optional[str], List[str]]:
         """
         Look up `query` on Wikipedia (lang edition).
 
@@ -97,9 +95,9 @@ class EventIdentityAgent:
             "action": "query",
             "list": "search",
             "srsearch": query,
-            "srlimit": 1,
+            "srlimit": "1",
             "format": "json",
-            "redirects": 1,
+            "redirects": "1",
         }
         try:
             resp = self._session.get(url, params=params, timeout=REQUEST_TIMEOUT)
@@ -109,7 +107,9 @@ class EventIdentityAgent:
             if results:
                 return results[0]["title"]
         except requests.RequestException as exc:
-            logger.warning("Wikipedia search failed for '%s' (%s): %s", query, lang, exc)
+            logger.warning(
+                "Wikipedia search failed for '%s' (%s): %s", query, lang, exc
+            )
         return None
 
     def _fetch_redirects(self, title: str, lang: str) -> List[str]:
@@ -132,7 +132,5 @@ class EventIdentityAgent:
                 for rd in page.get("redirects", []):
                     redirects.append(rd["title"])
         except requests.RequestException as exc:
-            logger.warning(
-                "Redirect fetch failed for '%s' (%s): %s", title, lang, exc
-            )
+            logger.warning("Redirect fetch failed for '%s' (%s): %s", title, lang, exc)
         return redirects

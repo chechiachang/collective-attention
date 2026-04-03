@@ -8,11 +8,11 @@ Responsibilities:
 For the MVP the agent ships with 3 hardcoded Taiwan events and also
 attempts to ingest a configurable RSS feed when a URL is provided.
 """
+
 from __future__ import annotations
 
 import hashlib
 import logging
-import uuid
 from datetime import date
 from typing import List, Optional
 

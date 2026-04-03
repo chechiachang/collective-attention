@@ -7,11 +7,11 @@ interest score (0–100) for each event's primary keyword.
 An anchor keyword (default: "台灣" / "Taiwan") is used to make scores
 comparable across different queries.
 """
+
 from __future__ import annotations
 
 import logging
 import time
-from typing import Optional
 
 from core.models import Event
 
@@ -91,9 +91,7 @@ class SearchSignalAgent:
                     backoff_factor=0.5,
                 )
             except ImportError:
-                logger.warning(
-                    "pytrends not installed – search scores will be zero"
-                )
+                logger.warning("pytrends not installed – search scores will be zero")
         return self._pytrends
 
     def _fetch_trend_score(self, keyword: str) -> float:
