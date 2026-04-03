@@ -14,23 +14,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
         with:
           python-version: "3.11"
-          cache: pip
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: uv sync --all-extras
 
       - name: Format check (black)
-        run: black --check .
+        run: uv run black --check .
 
       - name: Lint (ruff)
-        run: ruff check .
+        run: uv run ruff check .
 
       - name: Type check (mypy)
-        run: mypy .
+        run: uv run mypy .
 
       - name: Test (pytest)
-        run: pytest --tb=short -q
+        run: uv run pytest
