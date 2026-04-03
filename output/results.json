@@ -1,0 +1,163 @@
+{
+  "generated_at": "2026-04-03T06:03:38.730311+00:00",
+  "total_events": 5,
+  "events": [
+    {
+      "id": "772a7c87",
+      "title": "COVID-19台灣疫情",
+      "start_date": "2020-01-21",
+      "end_date": "2022-12-31",
+      "keywords": [
+        "COVID-19",
+        "台灣疫情",
+        "新冠肺炎",
+        "本土確診"
+      ],
+      "canonical_wiki_title": "2019冠狀病毒病台灣疫情",
+      "wiki_redirect_pages": [
+        "台灣COVID-19疫情",
+        "新冠肺炎台灣疫情"
+      ],
+      "score": 114.9362,
+      "signals": {
+        "event_id": "772a7c87",
+        "wiki_views": 1540000,
+        "news_count": 241,
+        "search_score": 95.2
+      },
+      "score_breakdown": {
+        "wiki_component": 14.2473,
+        "news_component": 5.4889,
+        "search_component": 95.2,
+        "total": 114.9362,
+        "explanation": "Very high wikipedia traffic; very high news coverage; high search interest."
+      }
+    },
+    {
+      "id": "529e590b",
+      "title": "太陽花學運",
+      "start_date": "2014-03-18",
+      "end_date": "2014-04-10",
+      "keywords": [
+        "太陽花",
+        "佔領立法院",
+        "服貿協議",
+        "學運"
+      ],
+      "canonical_wiki_title": "太陽花學運",
+      "wiki_redirect_pages": [
+        "佔領立法院事件",
+        "318學運",
+        "反服貿運動"
+      ],
+      "score": 107.2893,
+      "signals": {
+        "event_id": "529e590b",
+        "wiki_views": 890000,
+        "news_count": 132,
+        "search_score": 88.7
+      },
+      "score_breakdown": {
+        "wiki_component": 13.699,
+        "news_component": 4.8903,
+        "search_component": 88.7,
+        "total": 107.2893,
+        "explanation": "Very high wikipedia traffic; very high news coverage; high search interest."
+      }
+    },
+    {
+      "id": "1836889b",
+      "title": "花蓮地震",
+      "start_date": "2018-02-06",
+      "end_date": "2018-02-06",
+      "keywords": [
+        "花蓮",
+        "地震",
+        "0206",
+        "台灣地震"
+      ],
+      "canonical_wiki_title": "2018年花蓮地震",
+      "wiki_redirect_pages": [
+        "0206花蓮地震",
+        "花蓮206地震"
+      ],
+      "score": 91.5237,
+      "signals": {
+        "event_id": "1836889b",
+        "wiki_views": 410000,
+        "news_count": 89,
+        "search_score": 74.1
+      },
+      "score_breakdown": {
+        "wiki_component": 12.9239,
+        "news_component": 4.4998,
+        "search_component": 74.1,
+        "total": 91.5237,
+        "explanation": "Very high wikipedia traffic; high news coverage; high search interest."
+      }
+    },
+    {
+      "id": "e1863468",
+      "title": "普悠瑪列車出軌事故",
+      "start_date": "2018-10-21",
+      "end_date": "2018-10-21",
+      "keywords": [
+        "普悠瑪",
+        "出軌",
+        "台鐵",
+        "事故",
+        "宜蘭"
+      ],
+      "canonical_wiki_title": "普悠瑪列車出軌事故",
+      "wiki_redirect_pages": [
+        "台鐵1051021事故",
+        "普悠瑪事故"
+      ],
+      "score": 78.9314,
+      "signals": {
+        "event_id": "e1863468",
+        "wiki_views": 285000,
+        "news_count": 47,
+        "search_score": 62.5
+      },
+      "score_breakdown": {
+        "wiki_component": 12.5602,
+        "news_component": 3.8712,
+        "search_component": 62.5,
+        "total": 78.9314,
+        "explanation": "Very high wikipedia traffic; high news coverage; moderate search interest."
+      }
+    },
+    {
+      "id": "e1c2a0a6",
+      "title": "鄭捷事件",
+      "start_date": "2014-05-21",
+      "end_date": "2014-05-21",
+      "keywords": [
+        "鄭捷",
+        "捷運隨機殺人",
+        "台北捷運",
+        "板南線"
+      ],
+      "canonical_wiki_title": "鄭捷事件",
+      "wiki_redirect_pages": [
+        "台北捷運隨機殺人事件",
+        "鄭捷殺人事件"
+      ],
+      "score": 75.0014,
+      "signals": {
+        "event_id": "e1c2a0a6",
+        "wiki_views": 320000,
+        "news_count": 55,
+        "search_score": 58.3
+      },
+      "score_breakdown": {
+        "wiki_component": 12.6761,
+        "news_component": 4.0254,
+        "search_component": 58.3,
+        "total": 75.0014,
+        "explanation": "Very high wikipedia traffic; high news coverage; moderate search interest."
+      }
+    }
+  ]
+}
