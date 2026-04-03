@@ -8,6 +8,7 @@ Endpoints:
     GET /events/top          – top-N ranked events with score breakdown
     GET /events/{event_id}   – single event detail
     GET /health              – health check
+    GET /                    – frontend timeline page (static HTML)
 """
 
 from __future__ import annotations
@@ -16,13 +17,15 @@ import logging
 import os
 import sys
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import List, Optional
 
 # Make the project root importable when running directly
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from fastapi import FastAPI, HTTPException, Query
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from agents.event_detection import EventDetectionAgent
 from agents.event_identity import EventIdentityAgent
@@ -76,6 +79,11 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Serve the frontend from the `frontend/` directory at the root path
+_FRONTEND_DIR = Path(__file__).parent.parent / "frontend"
+if _FRONTEND_DIR.is_dir():
+    app.mount("/static", StaticFiles(directory=str(_FRONTEND_DIR)), name="static")
+
 
 # ---------------------------------------------------------------------------
 # Endpoints
@@ -87,14 +95,34 @@ def health() -> dict:
     return {"status": "ok"}
 
 
+@app.get("/", include_in_schema=False)
+def frontend() -> FileResponse:
+    """Serve the timeline frontend."""
+    index = _FRONTEND_DIR / "index.html"
+    if index.is_file():
+        return FileResponse(str(index))
+    raise HTTPException(status_code=404, detail="Frontend not found")
+
+
 @app.get("/events/top")
 def get_top_events(
     n: int = Query(
-        default=10, ge=1, le=50, description="Number of top events to return"
+        default=10, ge=1, le=100, description="Number of top events to return"
+    ),
+    sort: str = Query(
+        default="attention",
+        description=(
+            "Sort order: 'attention' (highest score first) or "
+            "'time' (earliest start_date first, suitable for timeline display)"
+        ),
     ),
 ) -> JSONResponse:
     """
-    Return the top-N ranked events with their score breakdown.
+    Return the top-N events.
+
+    Use ``sort=attention`` (default) to rank by collective-attention score.
+    Use ``sort=time`` to order chronologically by start date – ideal for
+    displaying events on a timeline.
 
     Each event includes:
     - id, title, start_date, end_date, keywords
@@ -106,9 +134,19 @@ def get_top_events(
         raise HTTPException(status_code=503, detail="Pipeline not yet initialised")
 
     top = _ranked_events[:n]
+
+    if sort == "time":
+        # Sort chronologically; events without dates go last
+        top = sorted(
+            top,
+            key=lambda e: (e.start_date is None, e.start_date or ""),
+        )
+    # Default "attention" ordering is already applied by the pipeline
+
     return JSONResponse(
         content={
             "count": len(top),
+            "sort": sort,
             "events": [e.to_dict() for e in top],
         }
     )

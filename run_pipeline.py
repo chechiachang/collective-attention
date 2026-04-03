@@ -83,6 +83,42 @@ _MOCK_SIGNALS: dict[str, dict] = {
         "news_count": 241,
         "search_score": 95.2,
     },
+    # ── New events (past 5 years) ──────────────────────────────────────────
+    "太魯閣號出軌事故": {
+        "canonical_wiki_title": "太魯閣號列車出軌事故",
+        "wiki_redirect_pages": ["台鐵408次事故", "2021年太魯閣號事故", "清水隧道事故"],
+        "wiki_views": 380_000,
+        "news_count": 95,
+        "search_score": 71.3,
+    },
+    "裴洛西訪台": {
+        "canonical_wiki_title": "南希·裴洛西訪台",
+        "wiki_redirect_pages": ["佩洛西訪台", "裴洛西台灣行", "2022年台海危機"],
+        "wiki_views": 520_000,
+        "news_count": 118,
+        "search_score": 82.4,
+    },
+    "2022年九合一選舉": {
+        "canonical_wiki_title": "2022年中華民國地方公職人員選舉",
+        "wiki_redirect_pages": ["2022地方選舉", "九合一選舉2022"],
+        "wiki_views": 190_000,
+        "news_count": 76,
+        "search_score": 63.8,
+    },
+    "2024年台灣總統大選": {
+        "canonical_wiki_title": "2024年中華民國總統選舉",
+        "wiki_redirect_pages": ["2024總統大選", "賴清德當選", "台灣2024選舉"],
+        "wiki_views": 650_000,
+        "news_count": 148,
+        "search_score": 86.5,
+    },
+    "2024年花蓮強震": {
+        "canonical_wiki_title": "2024年花蓮地震",
+        "wiki_redirect_pages": ["0403花蓮地震", "2024花蓮強震", "花蓮7.4地震"],
+        "wiki_views": 430_000,
+        "news_count": 102,
+        "search_score": 78.9,
+    },
 }
 
 
@@ -268,34 +304,40 @@ def _save_markdown(events: List[Event], path: str, is_mock: bool = False) -> Non
     lines.append("## Improvement Suggestions")
     lines.append("")
     lines.append(
-        "1. **Historical news signal** – current RSS feeds only return recent articles."
-        " Integrate GDELT or Media Cloud for historical article counts keyed to event dates."
+        "1. **Historical news signal** ✅ – `NewsSignalAgent` now supports a `use_gdelt=True`"
+        " parameter that queries the GDELT DOC 2.0 API for historical article counts keyed to"
+        " event date ranges, supplementing the RSS signal with years of archive data."
     )
     lines.append(
-        "2. **Search signal rate-limit** – pytrends is an unofficial API and gets throttled."
-        " Cache results to disk and add exponential backoff with jitter."
+        "2. **Search signal rate-limit** ✅ – `SearchSignalAgent` now retries up to"
+        " `max_retries` times with exponential back-off and random jitter on any transient"
+        " pytrends failure, dramatically reducing the impact of HTTP 429 throttling."
     )
     lines.append(
-        "3. **Score normalisation** – `log(wiki_views)` can reach ~14 while `search_score`"
-        " caps at 100, making search dominate. Consider z-score normalising each component"
-        " before summing, or introduce configurable weights."
+        "3. **Score normalisation** ✅ – `compute_score()` now accepts `wiki_weight`,"
+        " `news_weight`, and `search_weight` parameters so callers can re-balance the three"
+        " components without touching the formula.  Default weights of 1.0 preserve backward"
+        " compatibility."
     )
     lines.append(
-        "4. **Event deduplication** – RSS-ingested events may duplicate seed events."
-        " Use sentence-transformer embeddings + cosine similarity (already a dependency)"
-        " to merge near-duplicate titles."
+        "4. **Event deduplication** ✅ – `EventDetectionAgent` now uses Jaccard keyword-overlap"
+        " scoring (threshold 0.4) to detect near-duplicate RSS articles that describe a seed"
+        " event under a slightly different headline, not just exact title matching."
     )
     lines.append(
-        "5. **Persistent cache** – wrap each agent's API call with a file-based"
-        " cache (e.g., `diskcache`) so repeated runs don't re-fetch unchanged data."
+        "5. **Persistent cache** ✅ – `core/cache.py` introduces a `CacheStore` backed by"
+        " per-agent JSON files in `.cache/`.  All three signal agents use it by default"
+        " (`use_cache=True`) so repeated pipeline runs skip redundant API calls."
     )
     lines.append(
         "6. **Output format** – expose a `--format csv` option so results can be"
         " loaded directly into spreadsheets or BI tools."
     )
     lines.append(
-        "7. **Cross-lingual coverage** – add English Wikipedia pageviews for events"
-        " with international reach (e.g., COVID-19) to avoid under-counting."
+        "7. **Cross-lingual coverage** ✅ – `WikiSignalAgent` now fetches English Wikipedia"
+        " pageviews in addition to the primary Chinese article when `include_en=True`"
+        " (the new default).  Avoids under-counting for internationally notable events"
+        " such as COVID-19 and the Pelosi visit."
     )
     lines.append("")
 

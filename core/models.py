@@ -80,18 +80,39 @@ class Event:
         }
 
 
-def compute_score(signals: Signals) -> ScoreBreakdown:
+def compute_score(
+    signals: Signals,
+    wiki_weight: float = 1.0,
+    news_weight: float = 1.0,
+    search_weight: float = 1.0,
+) -> ScoreBreakdown:
     """
-    Compute an explainable score from multi-source signals.
+    Compute an explainable score from multi-source signals.  (Improvement #3)
 
-    Formula:
-        score = log(wiki_views + 1) + log(news_count + 1) + normalized_search
+    Formula::
 
-    The +1 guards against log(0).
+        score = wiki_weight  * log(wiki_views  + 1)
+              + news_weight  * log(news_count  + 1)
+              + search_weight * search_score
+
+    Configurable weights allow callers to rebalance the three components.
+    The +1 guards against log(0).  Default weights of 1.0 preserve the v1
+    behaviour so existing callers remain unaffected.
+
+    Parameters
+    ----------
+    signals : Signals
+        Raw signal values for the event.
+    wiki_weight : float
+        Multiplier for the Wikipedia pageview log-component (default 1.0).
+    news_weight : float
+        Multiplier for the news-count log-component (default 1.0).
+    search_weight : float
+        Multiplier for the search-score component (default 1.0).
     """
-    wiki_component = math.log(signals.wiki_views + 1)
-    news_component = math.log(signals.news_count + 1)
-    search_component = float(signals.search_score)  # already normalised 0–100
+    wiki_component = wiki_weight * math.log(signals.wiki_views + 1)
+    news_component = news_weight * math.log(signals.news_count + 1)
+    search_component = search_weight * float(signals.search_score)  # 0–100 normalised
 
     total = wiki_component + news_component + search_component
 

@@ -32,3 +32,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Pipeline cache (persistent signal cache, improvement #5)
+.cache/
