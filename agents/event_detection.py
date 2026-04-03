@@ -5,8 +5,14 @@ Responsibilities:
   1. Load seed events from hardcoded config or RSS feed.
   2. (Optional) Parse RSS articles, generate embeddings, and cluster into events.
 
-For the MVP the agent ships with 3 hardcoded Taiwan events and also
+For the MVP the agent ships with hardcoded Taiwan events (original 5 plus
+significant social/political events from the past five years) and also
 attempts to ingest a configurable RSS feed when a URL is provided.
+
+Improvements over v1:
+  #4  Deduplication now uses keyword-overlap scoring instead of exact title
+      matching so that RSS articles that describe a seed event under a
+      slightly different headline are filtered out correctly.
 """
 
 from __future__ import annotations
@@ -25,6 +31,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 SEED_EVENTS: List[dict] = [
+    # ── Original five ──────────────────────────────────────────────────────
     {
         "title": "普悠瑪列車出軌事故",
         "keywords": ["普悠瑪", "出軌", "台鐵", "事故", "宜蘭"],
@@ -54,6 +61,37 @@ SEED_EVENTS: List[dict] = [
         "keywords": ["COVID-19", "台灣疫情", "新冠肺炎", "本土確診"],
         "start_date": date(2020, 1, 21),
         "end_date": date(2022, 12, 31),
+    },
+    # ── Significant events from the past five years (2021–2026) ───────────
+    {
+        "title": "太魯閣號出軌事故",
+        "keywords": ["太魯閣號", "出軌", "台鐵408", "清水隧道", "列車事故"],
+        "start_date": date(2021, 4, 2),
+        "end_date": date(2021, 4, 2),
+    },
+    {
+        "title": "裴洛西訪台",
+        "keywords": ["裴洛西", "佩洛西", "訪台", "台海軍演", "解放軍演習"],
+        "start_date": date(2022, 8, 2),
+        "end_date": date(2022, 8, 10),
+    },
+    {
+        "title": "2022年九合一選舉",
+        "keywords": ["九合一選舉", "地方選舉", "民進黨", "國民黨", "2022選舉"],
+        "start_date": date(2022, 11, 26),
+        "end_date": date(2022, 11, 26),
+    },
+    {
+        "title": "2024年台灣總統大選",
+        "keywords": ["台灣大選", "賴清德", "總統選舉", "2024選舉", "民進黨"],
+        "start_date": date(2024, 1, 13),
+        "end_date": date(2024, 1, 13),
+    },
+    {
+        "title": "2024年花蓮強震",
+        "keywords": ["花蓮地震", "強震", "2024地震", "台灣地震", "7.4地震"],
+        "start_date": date(2024, 4, 3),
+        "end_date": date(2024, 4, 3),
     },
 ]
 
@@ -108,12 +146,17 @@ class EventDetectionAgent:
 
         if self.rss_url:
             rss_events = self._ingest_rss(self.rss_url)
-            # Deduplicate: skip if title already present
-            existing_titles = {e.title for e in events}
+            # Improvement #4 – keyword-overlap deduplication
+            # Build a flat set of all seed keywords for quick overlap check
+            seed_keyword_sets = [{kw.lower() for kw in e.keywords} for e in events]
             for e in rss_events:
-                if e.title not in existing_titles:
-                    events.append(e)
-                    existing_titles.add(e.title)
+                if self._is_duplicate(e, events, seed_keyword_sets):
+                    logger.debug(
+                        "RSS event deduplicated (keyword overlap): %s", e.title
+                    )
+                    continue
+                events.append(e)
+                seed_keyword_sets.append({kw.lower() for kw in e.keywords})
 
         logger.info("EventDetectionAgent: %d events detected", len(events))
         return events
@@ -121,6 +164,39 @@ class EventDetectionAgent:
     # ------------------------------------------------------------------
     # Private helpers
     # ------------------------------------------------------------------
+
+    @staticmethod
+    def _keyword_overlap(set_a: set, set_b: set) -> float:
+        """Jaccard-like overlap ratio between two keyword sets."""
+        if not set_a or not set_b:
+            return 0.0
+        intersection = len(set_a & set_b)
+        union = len(set_a | set_b)
+        return intersection / union if union else 0.0
+
+    def _is_duplicate(
+        self,
+        candidate: "Event",
+        existing: List["Event"],
+        existing_kw_sets: List[set],
+        title_match: bool = True,
+        overlap_threshold: float = 0.4,
+    ) -> bool:
+        """
+        Return True if *candidate* is a near-duplicate of any existing event.
+
+        A duplicate is detected when:
+        - Exact title match, OR
+        - Keyword-overlap ratio ≥ *overlap_threshold* (improvement #4).
+        """
+        candidate_kws = {kw.lower() for kw in candidate.keywords}
+        cand_title = candidate.title.lower()
+        for event, kw_set in zip(existing, existing_kw_sets):
+            if title_match and cand_title == event.title.lower():
+                return True
+            if self._keyword_overlap(candidate_kws, kw_set) >= overlap_threshold:
+                return True
+        return False
 
     def _ingest_rss(self, url: str) -> List[Event]:
         """Fetch and parse an RSS feed, returning a list of candidate events."""

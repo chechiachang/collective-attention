@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Collective Attention – Taiwan Events</title>
+  <style>
+    /* ── Reset & base ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", "PingFang TC", "Noto Sans TC", sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Layout ────────────────────────────────────────────────────── */
+    header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%);
+      padding: 24px 32px;
+      border-bottom: 1px solid #1e3a5f;
+    }
+    header h1 { font-size: 1.6rem; font-weight: 700; color: #60a5fa; }
+    header p  { font-size: 0.85rem; color: #94a3b8; margin-top: 4px; }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      padding: 16px 32px;
+      background: #131722;
+      border-bottom: 1px solid #1e293b;
+    }
+    .tab-btn {
+      padding: 8px 20px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      background: transparent;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.2s, color 0.2s;
+    }
+    .tab-btn.active {
+      background: #1e40af;
+      color: #fff;
+      border-color: #1e40af;
+    }
+    .tab-btn:hover:not(.active) { background: #1e293b; color: #e2e8f0; }
+
+    #controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 32px;
+      background: #131722;
+    }
+    #controls label { font-size: 0.85rem; color: #94a3b8; }
+    #n-slider { accent-color: #3b82f6; }
+    #n-label  { font-size: 0.85rem; color: #60a5fa; min-width: 28px; }
+
+    main { padding: 24px 32px; max-width: 1100px; margin: 0 auto; }
+
+    #status { color: #94a3b8; font-size: 0.9rem; margin-bottom: 16px; }
+
+    /* ── Shared card ───────────────────────────────────────────────── */
+    .event-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      transition: border-color 0.2s;
+      cursor: pointer;
+    }
+    .event-card:hover { border-color: #3b82f6; }
+    .event-card .card-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .event-card .rank {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #3b82f6;
+      min-width: 36px;
+    }
+    .event-card .title {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+    .event-card .date-badge {
+      margin-left: auto;
+      font-size: 0.78rem;
+      color: #64748b;
+      white-space: nowrap;
+    }
+    .event-card .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .score-bar-bg {
+      flex: 1;
+      height: 6px;
+      background: #0f172a;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.5s ease;
+    }
+    .score-label { font-size: 0.8rem; color: #60a5fa; min-width: 44px; text-align: right; }
+    .explanation { font-size: 0.8rem; color: #94a3b8; margin-top: 6px; }
+    .signals-row {
+      display: none;
+      gap: 16px;
+      margin-top: 10px;
+      font-size: 0.78rem;
+      color: #64748b;
+    }
+    .event-card.expanded .signals-row { display: flex; flex-wrap: wrap; }
+    .signal-pill {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 4px;
+      padding: 2px 8px;
+    }
+    .keywords-row {
+      display: none;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .event-card.expanded .keywords-row { display: flex; }
+    .keyword-tag {
+      background: #1e3a5f;
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 0.72rem;
+      color: #93c5fd;
+    }
+
+    /* ── Timeline view ─────────────────────────────────────────────── */
+    #timeline-view { display: none; }
+    .timeline-axis {
+      position: relative;
+      padding-left: 120px;
+    }
+    .timeline-axis::before {
+      content: "";
+      position: absolute;
+      left: 104px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #334155;
+    }
+    .tl-year-group { margin-bottom: 8px; }
+    .tl-year-label {
+      position: absolute;
+      left: 0;
+      font-size: 0.75rem;
+      color: #475569;
+      padding-top: 14px;
+      width: 96px;
+      text-align: right;
+    }
+    .tl-dot {
+      position: absolute;
+      left: 98px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid #3b82f6;
+      background: #0f1117;
+      top: 14px;
+      z-index: 1;
+    }
+    .tl-card {
+      margin-left: 24px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    /* ── Score colour gradient (green → yellow → red inverse) ─────── */
+    .score-high   { background: #22c55e; }
+    .score-mid    { background: #facc15; }
+    .score-low    { background: #3b82f6; }
+
+    /* ── Empty / loading states ─────────────────────────────────────── */
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid #334155;
+      border-top-color: #3b82f6;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 40px auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Responsive ─────────────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      header, main, #controls, .tabs { padding-left: 16px; padding-right: 16px; }
+      .event-card .card-header { flex-wrap: wrap; }
+      .event-card .date-badge { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🇹🇼 Collective Attention — Taiwan Events</h1>
+  <p>Multi-signal collective-attention scores: Wikipedia · News · Google Trends</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" id="btn-ranking" onclick="switchView('ranking')">📊 By Attention</button>
+  <button class="tab-btn"        id="btn-timeline" onclick="switchView('timeline')">🕐 Timeline</button>
+</div>
+
+<div id="controls">
+  <label for="n-slider">Top N events:</label>
+  <input id="n-slider" type="range" min="3" max="20" value="10" oninput="onNChange(this.value)" />
+  <span id="n-label">10</span>
+  <button class="tab-btn" style="margin-left:auto" onclick="loadData()">↻ Refresh</button>
+</div>
+
+<main>
+  <div id="status">Loading…</div>
+  <div id="ranking-view"></div>
+  <div id="timeline-view"></div>
+</main>
+
+<script>
+/* ────────────────────────────────────────────────────────────────────────
+   State
+   ──────────────────────────────────────────────────────────────────────── */
+let allEvents   = [];          // full ranked list from the API
+let currentView = 'ranking';  // 'ranking' | 'timeline'
+let topN        = 10;
+
+/* ────────────────────────────────────────────────────────────────────────
+   Data loading
+   ──────────────────────────────────────────────────────────────────────── */
+async function loadData() {
+  setStatus('Loading…');
+  showSpinner();
+
+  // Try the live API first, fall back to the bundled output/results.json.
+  // Request 50 events so the slider (max 20) always has enough data.
+  // The API allows up to 100; results are sliced client-side by topN.
+  const sources = [
+    `/events/top?n=50&sort=attention`,
+    `../output/results.json`,
+  ];
+
+  let data = null;
+  for (const src of sources) {
+    try {
+      const res = await fetch(src);
+      if (!res.ok) continue;
+      data = await res.json();
+      if (data && (data.events || data.events === null)) break;
+    } catch (_) { /* try next */ }
+  }
+
+  if (!data || !Array.isArray(data.events)) {
+    setStatus('⚠️  Could not load event data. Is the API server running?');
+    document.getElementById('ranking-view').innerHTML = '';
+    document.getElementById('timeline-view').innerHTML = '';
+    return;
+  }
+
+  allEvents = data.events;
+  setStatus(`Showing top ${Math.min(topN, allEvents.length)} of ${allEvents.length} events`);
+  render();
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   Rendering
+   ──────────────────────────────────────────────────────────────────────── */
+function render() {
+  const events = allEvents.slice(0, topN);
+  setStatus(`Showing top ${events.length} of ${allEvents.length} events`);
+
+  renderRanking(events);
+  renderTimeline(events);
+}
+
+function maxScore(events) {
+  return Math.max(...events.map(e => e.score || 0), 1);
+}
+
+function scoreClass(score, max) {
+  const pct = score / max;
+  if (pct >= 0.75) return 'score-high';
+  if (pct >= 0.45) return 'score-mid';
+  return 'score-low';
+}
+
+function fmtDate(e) {
+  if (!e.start_date) return '';
+  if (!e.end_date || e.end_date === e.start_date) return e.start_date;
+  return `${e.start_date} → ${e.end_date}`;
+}
+
+function buildCard(event, rank, maxScoreVal) {
+  const scorePct    = Math.round((event.score / maxScoreVal) * 100);
+  const colorClass  = scoreClass(event.score, maxScoreVal);
+  const dateStr     = fmtDate(event);
+  const sb          = event.score_breakdown || {};
+  const sig         = event.signals || {};
+  const keywords    = (event.keywords || []).map(k =>
+    `<span class="keyword-tag">${escHtml(k)}</span>`).join('');
+  const wikiTitle   = event.canonical_wiki_title
+    ? `<a href="https://zh.wikipedia.org/wiki/${encodeURIComponent(event.canonical_wiki_title)}"
+          target="_blank" rel="noopener" title="Wikipedia">📖 ${escHtml(event.canonical_wiki_title)}</a>`
+    : '';
+
+  return `
+  <div class="event-card" id="card-${event.id}" onclick="toggleCard('${event.id}')">
+    <div class="card-header">
+      ${rank != null ? `<span class="rank">#${rank}</span>` : ''}
+      <span class="title">${escHtml(event.title)}</span>
+      ${dateStr ? `<span class="date-badge">📅 ${dateStr}</span>` : ''}
+    </div>
+    <div class="bar-row">
+      <div class="score-bar-bg">
+        <div class="score-bar-fill ${colorClass}" style="width:${scorePct}%"></div>
+      </div>
+      <span class="score-label">${(event.score || 0).toFixed(1)}</span>
+    </div>
+    ${sb.explanation ? `<div class="explanation">${escHtml(sb.explanation)}</div>` : ''}
+    <div class="signals-row">
+      ${sig.wiki_views != null ? `<span class="signal-pill">📖 Wiki: ${fmtNum(sig.wiki_views)}</span>` : ''}
+      ${sig.news_count != null ? `<span class="signal-pill">📰 News: ${sig.news_count}</span>` : ''}
+      ${sig.search_score != null ? `<span class="signal-pill">🔍 Trends: ${sig.search_score.toFixed(1)}</span>` : ''}
+      ${sb.wiki_component != null ? `<span class="signal-pill">wiki_score: ${sb.wiki_component.toFixed(2)}</span>` : ''}
+      ${sb.news_component != null ? `<span class="signal-pill">news_score: ${sb.news_component.toFixed(2)}</span>` : ''}
+      ${wikiTitle}
+    </div>
+    <div class="keywords-row">${keywords}</div>
+  </div>`;
+}
+
+function renderRanking(events) {
+  const mx  = maxScore(events);
+  const html = events.map((e, i) => buildCard(e, i + 1, mx)).join('');
+  document.getElementById('ranking-view').innerHTML = html;
+}
+
+function renderTimeline(events) {
+  // Sort chronologically
+  const sorted = [...events].sort((a, b) => {
+    if (!a.start_date && !b.start_date) return 0;
+    if (!a.start_date) return 1;
+    if (!b.start_date) return -1;
+    return a.start_date.localeCompare(b.start_date);
+  });
+
+  const mx = maxScore(events);
+
+  // Group by year for the axis labels
+  const byYear = {};
+  for (const e of sorted) {
+    const yr = e.start_date ? e.start_date.slice(0, 4) : '?';
+    if (!byYear[yr]) byYear[yr] = [];
+    byYear[yr].push(e);
+  }
+
+  let html = '<div class="timeline-axis">';
+  for (const yr of Object.keys(byYear).sort()) {
+    html += `<div class="tl-year-group">`;
+    let first = true;
+    for (const e of byYear[yr]) {
+      html += `
+        <div class="tl-card" style="position:relative">
+          ${first ? `<span class="tl-year-label">${yr}</span>` : ''}
+          <div class="tl-dot"></div>
+          ${buildCard(e, null, mx)}
+        </div>`;
+      first = false;
+    }
+    html += `</div>`;
+  }
+  html += '</div>';
+
+  document.getElementById('timeline-view').innerHTML = html;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   UI interactions
+   ──────────────────────────────────────────────────────────────────────── */
+function switchView(view) {
+  currentView = view;
+  document.getElementById('ranking-view').style.display  = (view === 'ranking')  ? '' : 'none';
+  document.getElementById('timeline-view').style.display = (view === 'timeline') ? '' : 'none';
+  document.getElementById('btn-ranking').classList.toggle('active',  view === 'ranking');
+  document.getElementById('btn-timeline').classList.toggle('active', view === 'timeline');
+}
+
+function toggleCard(id) {
+  const el = document.getElementById(`card-${id}`);
+  if (el) el.classList.toggle('expanded');
+}
+
+function onNChange(val) {
+  topN = parseInt(val, 10);
+  document.getElementById('n-label').textContent = val;
+  render();
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   Helpers
+   ──────────────────────────────────────────────────────────────────────── */
+function setStatus(msg) {
+  document.getElementById('status').textContent = msg;
+}
+
+function showSpinner() {
+  document.getElementById('ranking-view').innerHTML  = '<div class="spinner"></div>';
+  document.getElementById('timeline-view').innerHTML = '';
+}
+
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function fmtNum(n) {
+  return Number(n).toLocaleString();
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   Boot
+   ──────────────────────────────────────────────────────────────────────── */
+switchView('ranking');
+loadData();
+</script>
+</body>
+</html>
