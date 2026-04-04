@@ -224,3 +224,100 @@ class TestTimelineConsistency:
         assert (
             "start_date" in code
         ), "renderTimeline must handle events with no start_date"
+
+    def test_timeline_proportional_axis(self, html_content):
+        """renderTimeline must emit year and quarter axis tick labels."""
+        import re
+
+        match = re.search(
+            r"function renderTimeline\b.*?^}",
+            html_content,
+            re.MULTILINE | re.DOTALL,
+        )
+        assert match, "function renderTimeline not found"
+        code = match.group(0)
+        # Year labels
+        assert "tl-axis-year" in code, (
+            "renderTimeline must emit year labels (class tl-axis-year) for a "
+            "proportional time axis"
+        )
+        # Quarter labels
+        assert "tl-axis-qtr" in code, (
+            "renderTimeline must emit quarter labels (class tl-axis-qtr) for a "
+            "proportional time axis"
+        )
+        # Fixed spacing constant
+        assert (
+            "PX_PER_MONTH" in code
+        ), "renderTimeline must use a PX_PER_MONTH constant for consistent spacing"
+
+    def test_timeline_cards_are_clickable(self, html_content):
+        """Cards in the timeline must use toggleCard so details can be expanded."""
+        import re
+
+        match = re.search(
+            r"function renderTimeline\b.*?^}",
+            html_content,
+            re.MULTILINE | re.DOTALL,
+        )
+        assert match, "function renderTimeline not found"
+        code = match.group(0)
+        assert "buildCard" in code, (
+            "renderTimeline must call buildCard (which embeds the toggleCard handler) "
+            "so timeline events are clickable"
+        )
+
+
+class TestSourceLinking:
+    """The Wikipedia source link must be always visible in the card header."""
+
+    def test_wiki_link_in_build_card(self, html_content):
+        """buildCard must render a Wikipedia anchor tag."""
+        import re
+
+        match = re.search(
+            r"function buildCard\b.*?^}",
+            html_content,
+            re.MULTILINE | re.DOTALL,
+        )
+        assert match, "function buildCard not found"
+        code = match.group(0)
+        assert (
+            "zh.wikipedia.org/wiki/" in code
+        ), "buildCard must include a zh.wikipedia.org link for the canonical wiki title"
+
+    def test_wiki_link_outside_signals_row(self, html_content):
+        """The Wikipedia link must appear before the signals-row so it is always visible."""
+        import re
+
+        match = re.search(
+            r"function buildCard\b.*?^}",
+            html_content,
+            re.MULTILINE | re.DOTALL,
+        )
+        assert match, "function buildCard not found"
+        code = match.group(0)
+        wiki_pos = code.find("zh.wikipedia.org")
+        signals_row_pos = code.find("signals-row")
+        assert wiki_pos != -1, "Wikipedia link not found in buildCard"
+        assert signals_row_pos != -1, "signals-row not found in buildCard"
+        assert wiki_pos < signals_row_pos, (
+            "Wikipedia link must appear before signals-row (i.e. in the always-visible "
+            "card header, not inside the collapsed signals section)"
+        )
+
+    def test_wiki_link_stops_propagation(self, html_content):
+        """Clicking the wiki link must not toggle card expansion."""
+        import re
+
+        match = re.search(
+            r"function buildCard\b.*?^}",
+            html_content,
+            re.MULTILINE | re.DOTALL,
+        )
+        assert match, "function buildCard not found"
+        code = match.group(0)
+        assert "stopPropagation" in code, (
+            "The wiki link must call stopPropagation() so clicking it does not "
+            "also toggle the card expanded/collapsed state"
+        )

@@ -143,9 +143,75 @@
       font-size: 0.72rem;
       color: #93c5fd;
     }
+    /* Wikipedia source link in card header (always visible) */
+    .wiki-header-link {
+      font-size: 0.85rem;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .wiki-header-link:hover { opacity: 1; }
 
     /* ── Timeline view ─────────────────────────────────────────────── */
     #timeline-view { display: none; }
+
+    /* Proportional timeline axis */
+    .tl-prop-axis {
+      position: relative;
+      padding-left: 120px;
+      min-height: 200px;
+    }
+    .tl-prop-line {
+      position: absolute;
+      left: 104px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #334155;
+    }
+    /* Year tick: bold blue */
+    .tl-axis-year {
+      position: absolute;
+      left: 0;
+      width: 96px;
+      text-align: right;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #60a5fa;
+      line-height: 1.2;
+    }
+    /* Quarter tick: small grey */
+    .tl-axis-qtr {
+      position: absolute;
+      left: 0;
+      width: 96px;
+      text-align: right;
+      font-size: 0.68rem;
+      color: #475569;
+      line-height: 1.2;
+    }
+    /* Each event item in the proportional axis */
+    .tl-prop-item {
+      position: absolute;
+      left: 120px;
+      right: 0;
+    }
+    .tl-prop-item .tl-dot {
+      left: -23px;
+    }
+    /* Dot shared style */
+    .tl-dot {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid #3b82f6;
+      background: #0f1117;
+      top: 14px;
+      z-index: 1;
+    }
+    /* Fallback: simple list for undated events */
     .timeline-axis {
       position: relative;
       padding-left: 120px;
@@ -159,7 +225,6 @@
       width: 2px;
       background: #334155;
     }
-    .tl-year-group { margin-bottom: 8px; }
     .tl-year-label {
       position: absolute;
       left: 0;
@@ -169,22 +234,21 @@
       width: 96px;
       text-align: right;
     }
-    .tl-dot {
-      position: absolute;
-      left: 98px;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      border: 2px solid #3b82f6;
-      background: #0f1117;
-      top: 14px;
-      z-index: 1;
-    }
     .tl-card {
       margin-left: 24px;
       margin-bottom: 16px;
       position: relative;
     }
+    .tl-card .tl-dot { left: 98px; }
+
+    /* Expand hint visible on timeline cards */
+    .expand-hint {
+      font-size: 0.7rem;
+      color: #475569;
+      margin-top: 4px;
+      user-select: none;
+    }
+    .event-card.expanded .expand-hint { display: none; }
 
     /* ── Score colour gradient (green → yellow → red inverse) ─────── */
     .score-high   { background: #22c55e; }
@@ -316,9 +380,13 @@ function buildCard(event, rank, maxScoreVal) {
   const sig         = event.signals || {};
   const keywords    = (event.keywords || []).map(k =>
     `<span class="keyword-tag">${escHtml(k)}</span>`).join('');
-  const wikiTitle   = event.canonical_wiki_title
+  // Wikipedia source link — always visible in the card header
+  const wikiLink    = event.canonical_wiki_title
     ? `<a href="https://zh.wikipedia.org/wiki/${encodeURIComponent(event.canonical_wiki_title)}"
-          target="_blank" rel="noopener" title="Wikipedia">📖 ${escHtml(event.canonical_wiki_title)}</a>`
+          target="_blank" rel="noopener"
+          title="Wikipedia: ${escHtml(event.canonical_wiki_title)}"
+          onclick="event.stopPropagation()"
+          class="wiki-header-link">📖</a>`
     : '';
 
   return `
@@ -326,6 +394,7 @@ function buildCard(event, rank, maxScoreVal) {
     <div class="card-header">
       ${rank != null ? `<span class="rank">#${rank}</span>` : ''}
       <span class="title">${escHtml(event.title)}</span>
+      ${wikiLink}
       ${dateStr ? `<span class="date-badge">📅 ${dateStr}</span>` : ''}
     </div>
     <div class="bar-row">
@@ -341,9 +410,9 @@ function buildCard(event, rank, maxScoreVal) {
       ${sig.search_score != null ? `<span class="signal-pill">🔍 Trends: ${sig.search_score.toFixed(1)}</span>` : ''}
       ${sb.wiki_component != null ? `<span class="signal-pill">wiki_score: ${sb.wiki_component.toFixed(2)}</span>` : ''}
       ${sb.news_component != null ? `<span class="signal-pill">news_score: ${sb.news_component.toFixed(2)}</span>` : ''}
-      ${wikiTitle}
     </div>
     <div class="keywords-row">${keywords}</div>
+    <div class="expand-hint">▸ Click to expand details</div>
   </div>`;
 }
 
@@ -354,7 +423,7 @@ function renderRanking(events) {
 }
 
 function renderTimeline(events) {
-  // Sort chronologically
+  // Sort chronologically; undated events go last
   const sorted = [...events].sort((a, b) => {
     if (!a.start_date && !b.start_date) return 0;
     if (!a.start_date) return 1;
@@ -363,33 +432,100 @@ function renderTimeline(events) {
   });
 
   const mx = maxScore(events);
+  const PX_PER_MONTH = 40;
 
-  // Group by year for the axis labels
-  const byYear = {};
-  for (const e of sorted) {
-    const yr = e.start_date ? e.start_date.slice(0, 4) : '?';
-    if (!byYear[yr]) byYear[yr] = [];
-    byYear[yr].push(e);
-  }
+  const datedEvents   = sorted.filter(e => e.start_date);
+  const undatedEvents = sorted.filter(e => !e.start_date);
 
-  let html = '<div class="timeline-axis">';
-  for (const yr of Object.keys(byYear).sort()) {
-    html += `<div class="tl-year-group">`;
-    let first = true;
-    for (const e of byYear[yr]) {
-      html += `
-        <div class="tl-card" style="position:relative">
-          ${first ? `<span class="tl-year-label">${yr}</span>` : ''}
-          <div class="tl-dot"></div>
-          ${buildCard(e, null, mx)}
-        </div>`;
-      first = false;
+  // Fallback when no event has a date
+  if (!datedEvents.length) {
+    let html = '<div class="timeline-axis">';
+    for (const e of undatedEvents) {
+      html += `<div class="tl-card" style="position:relative">
+        <span class="tl-year-label">?</span>
+        <div class="tl-dot"></div>
+        ${buildCard(e, null, mx)}
+      </div>`;
     }
-    html += `</div>`;
+    html += '</div>';
+    document.getElementById('timeline-view').innerHTML = html;
+    return;
   }
-  html += '</div>';
 
-  document.getElementById('timeline-view').innerHTML = html;
+  // Parse "YYYY-MM-DD" → { y, m } (m is 0-based)
+  function parseYM(s) {
+    return { y: parseInt(s.slice(0, 4), 10), m: parseInt(s.slice(5, 7), 10) - 1 };
+  }
+
+  // Axis bounds: 1 month before first event, 2 months after last event
+  const first = parseYM(datedEvents[0].start_date);
+  const last  = parseYM(datedEvents[datedEvents.length - 1].start_date);
+  let axisStartY = first.y, axisStartM = first.m - 1;
+  if (axisStartM < 0) { axisStartY--; axisStartM += 12; }
+  let axisEndY = last.y, axisEndM = last.m + 2;
+  if (axisEndM > 11) { axisEndY++; axisEndM -= 12; }
+
+  const totalMonths = (axisEndY - axisStartY) * 12 + (axisEndM - axisStartM);
+  const totalPx = totalMonths * PX_PER_MONTH;
+
+  function monthOffset(dateStr) {
+    const d = parseYM(dateStr);
+    return (d.y - axisStartY) * 12 + (d.m - axisStartM);
+  }
+
+  // Axis tick labels: year labels at January, quarter labels every 3 months
+  let labels = '';
+  for (let i = 0; i <= totalMonths; i++) {
+    const absM = axisStartM + i;
+    const yr   = axisStartY + Math.floor(absM / 12);
+    const mo   = ((absM % 12) + 12) % 12;
+    const top  = i * PX_PER_MONTH;
+    if (mo === 0) {
+      labels += `<div class="tl-axis-year" style="top:${top}px">${yr}</div>`;
+    } else if (mo % 3 === 0) {
+      labels += `<div class="tl-axis-qtr" style="top:${top}px">${yr}/${mo + 1}</div>`;
+    }
+  }
+
+  // Place events, shifting overlapping cards downward
+  const CARD_H = 110; // approximate collapsed card height (px)
+  const placed = [];
+  function placeTop(preferred) {
+    let top = preferred;
+    while (placed.some(t => Math.abs(t - top) < CARD_H)) top += CARD_H;
+    placed.push(top);
+    return top;
+  }
+
+  let items = '';
+  for (const e of datedEvents) {
+    const top = placeTop(monthOffset(e.start_date) * PX_PER_MONTH);
+    items += `<div class="tl-prop-item" style="top:${top}px">
+      <div class="tl-dot"></div>
+      ${buildCard(e, null, mx)}
+    </div>`;
+  }
+
+  // Undated events appended after the axis
+  for (const e of undatedEvents) {
+    const top = placeTop(totalPx + PX_PER_MONTH);
+    items += `<div class="tl-prop-item" style="top:${top}px">
+      <span class="tl-axis-year" style="left:-120px">?</span>
+      <div class="tl-dot"></div>
+      ${buildCard(e, null, mx)}
+    </div>`;
+  }
+
+  const totalHeight = placed.length
+    ? Math.max(totalPx, Math.max(...placed) + 200)
+    : totalPx + 200;
+
+  document.getElementById('timeline-view').innerHTML = `
+    <div class="tl-prop-axis" style="height:${totalHeight}px">
+      <div class="tl-prop-line"></div>
+      ${labels}
+      ${items}
+    </div>`;
 }
 
 /* ────────────────────────────────────────────────────────────────────────
