@@ -79,8 +79,8 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Serve the frontend from the `frontend/` directory at the root path
-_FRONTEND_DIR = Path(__file__).parent.parent / "frontend"
+# Serve the frontend from the `docs/` directory at the root path
+_FRONTEND_DIR = Path(__file__).parent.parent / "docs"
 if _FRONTEND_DIR.is_dir():
     app.mount("/static", StaticFiles(directory=str(_FRONTEND_DIR)), name="static")
 

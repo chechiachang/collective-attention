@@ -1,0 +1,54 @@
+name: Deploy Pages Site
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: pages-main-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-main-site:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Prepare site artifacts
+        run: |
+          rm -rf /tmp/site
+          mkdir -p /tmp/site
+          cp -a docs/. /tmp/site/
+          echo "collective-attention.chechia.net" > /tmp/site/CNAME
+          touch /tmp/site/.nojekyll
+
+      - name: Update gh-pages root (preserve PR previews)
+        run: |
+          git fetch origin gh-pages
+          git checkout gh-pages
+
+          # Keep existing PR previews and replace root site content.
+          find . -mindepth 1 -maxdepth 1 \
+            ! -name .git \
+            ! -name pr-preview \
+            -exec rm -rf {} +
+
+          cp -a /tmp/site/. .
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "deploy: update main site"
+          git push origin gh-pages

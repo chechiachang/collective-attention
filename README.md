@@ -6,6 +6,13 @@ A data pipeline and API that quantifies which real-world events people collectiv
 
 ---
 
+## Deployment Status
+
+[![Deploy Pages Site](https://github.com/chechiachang/collective-attention/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/chechiachang/collective-attention/actions/workflows/deploy-pages.yml)
+[![Deploy PR Preview](https://github.com/chechiachang/collective-attention/actions/workflows/preview.yml/badge.svg)](https://github.com/chechiachang/collective-attention/actions/workflows/preview.yml)
+
+---
+
 ## What It Does
 
 The system answers:
@@ -234,6 +241,13 @@ collective-attention/
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+When you open or update a pull request, a live preview of `docs/index.html` is automatically
+deployed to GitHub Pages and linked in a PR comment:
+
+```
+https://collective-attention.chechia.net/pr-preview/pr-<number>/
+```
 
 ---
 

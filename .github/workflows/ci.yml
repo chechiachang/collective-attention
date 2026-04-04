@@ -66,5 +66,5 @@ jobs:
         with:
           python-version: "3.11"
       - run: uv sync --all-extras
-      - name: Validate frontend/index.html structure
+      - name: Validate docs/index.html structure
         run: uv run pytest tests/test_frontend.py -v

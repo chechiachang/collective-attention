@@ -65,6 +65,19 @@ Thank you for your interest in contributing!
 2. Make your changes, ensuring all CI checks pass (`make check`).
 3. Open a pull request against `main` with a clear description of the change.
 
+### PR Preview
+
+When you open or update a pull request, the [Deploy PR Preview](https://github.com/marketplace/actions/deploy-pr-preview)
+action automatically deploys a live preview of `docs/index.html` to GitHub Pages.
+
+A comment is posted on the PR with a direct link to the preview:
+
+```
+https://chechia.net/collective-attention/pr-preview/pr-<number>/
+```
+
+The preview is updated on every push to the PR and removed automatically when the PR is closed.
+
 ---
 
 ## Reporting Issues
