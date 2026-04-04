@@ -24,7 +24,7 @@ jobs:
       - name: Deploy PR preview
         uses: rossjrw/pr-preview-action@v1
         with:
-          source-dir: ./frontend/
+          source-dir: ./docs/
           preview-branch: gh-pages
           pages-base-url: chechia.net/collective-attention
           qr-code: true

@@ -68,12 +68,12 @@ Thank you for your interest in contributing!
 ### PR Preview
 
 When you open or update a pull request, the [Deploy PR Preview](https://github.com/marketplace/actions/deploy-pr-preview)
-action automatically deploys a live preview of `frontend/index.html` to GitHub Pages.
+action automatically deploys a live preview of `docs/index.html` to GitHub Pages.
 
 A comment is posted on the PR with a direct link to the preview:
 
 ```
-https://chechiachang.github.io/collective-attention/pr-preview/pr-<number>/
+https://chechia.net/collective-attention/pr-preview/pr-<number>/
 ```
 
 The preview is updated on every push to the PR and removed automatically when the PR is closed.

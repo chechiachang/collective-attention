@@ -1,5 +1,5 @@
 """
-Tests for frontend/index.html
+Tests for docs/index.html
 
 Validates that the frontend page contains the expected HTML structure,
 required JavaScript functions, and correct API/fallback endpoints.
@@ -19,7 +19,7 @@ FRONTEND_PATH = Path(__file__).parent.parent / "docs" / "index.html"
 
 @pytest.fixture(scope="module")
 def html_content() -> str:
-    assert FRONTEND_PATH.is_file(), f"frontend/index.html not found at {FRONTEND_PATH}"
+    assert FRONTEND_PATH.is_file(), f"docs/index.html not found at {FRONTEND_PATH}"
     return FRONTEND_PATH.read_text(encoding="utf-8")
 
 
