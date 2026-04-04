@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-03T08:10:44.485486+00:00",
+  "generated_at": "2026-04-04T05:18:10.238020+00:00",
   "total_events": 10,
   "events": [
     {
@@ -18,7 +18,7 @@
         "台灣COVID-19疫情",
         "新冠肺炎台灣疫情"
       ],
-      "score": 114.9362,
+      "score": 81.0626,
       "signals": {
         "event_id": "772a7c87",
         "wiki_views": 1540000,
@@ -26,10 +26,10 @@
         "search_score": 95.2
       },
       "score_breakdown": {
-        "wiki_component": 14.2473,
-        "news_component": 5.4889,
-        "search_component": 95.2,
-        "total": 114.9362,
+        "wiki_component": 29.4644,
+        "news_component": 19.8649,
+        "search_component": 31.7333,
+        "total": 81.0626,
         "explanation": "Very high wikipedia traffic; very high news coverage; high search interest."
       }
     },
@@ -50,7 +50,7 @@
         "318學運",
         "反服貿運動"
       ],
-      "score": 107.2893,
+      "score": 75.5957,
       "signals": {
         "event_id": "529e590b",
         "wiki_views": 890000,
@@ -58,10 +58,10 @@
         "search_score": 88.7
       },
       "score_breakdown": {
-        "wiki_component": 13.699,
-        "news_component": 4.8903,
-        "search_component": 88.7,
-        "total": 107.2893,
+        "wiki_component": 28.3304,
+        "news_component": 17.6986,
+        "search_component": 29.5667,
+        "total": 75.5957,
         "explanation": "Very high wikipedia traffic; very high news coverage; high search interest."
       }
     },
@@ -83,7 +83,7 @@
         "賴清德當選",
         "台灣2024選舉"
       ],
-      "score": 104.8887,
+      "score": 74.6236,
       "signals": {
         "event_id": "033d9ed3",
         "wiki_views": 650000,
@@ -91,10 +91,10 @@
         "search_score": 86.5
       },
       "score_breakdown": {
-        "wiki_component": 13.3847,
-        "news_component": 5.0039,
-        "search_component": 86.5,
-        "total": 104.8887,
+        "wiki_component": 27.6805,
+        "news_component": 18.1097,
+        "search_component": 28.8333,
+        "total": 74.6236,
         "explanation": "Very high wikipedia traffic; very high news coverage; high search interest."
       }
     },
@@ -116,7 +116,7 @@
         "裴洛西台灣行",
         "2022年台海危機"
       ],
-      "score": 100.3407,
+      "score": 71.9818,
       "signals": {
         "event_id": "345053c4",
         "wiki_views": 520000,
@@ -124,10 +124,10 @@
         "search_score": 82.4
       },
       "score_breakdown": {
-        "wiki_component": 13.1616,
-        "news_component": 4.7791,
-        "search_component": 82.4,
-        "total": 100.3407,
+        "wiki_component": 27.2191,
+        "news_component": 17.296,
+        "search_component": 27.4667,
+        "total": 71.9818,
         "explanation": "Very high wikipedia traffic; very high news coverage; high search interest."
       }
     },
@@ -149,7 +149,7 @@
         "2024花蓮強震",
         "花蓮7.4地震"
       ],
-      "score": 96.5063,
+      "score": 69.8995,
       "signals": {
         "event_id": "a7c1c208",
         "wiki_views": 430000,
@@ -157,10 +157,10 @@
         "search_score": 78.9
       },
       "score_breakdown": {
-        "wiki_component": 12.9715,
-        "news_component": 4.6347,
-        "search_component": 78.9,
-        "total": 96.5063,
+        "wiki_component": 26.826,
+        "news_component": 16.7735,
+        "search_component": 26.3,
+        "total": 69.8995,
         "explanation": "Very high wikipedia traffic; very high news coverage; high search interest."
       }
     },
@@ -180,7 +180,7 @@
         "0206花蓮地震",
         "花蓮206地震"
       ],
-      "score": 91.5237,
+      "score": 67.7127,
       "signals": {
         "event_id": "1836889b",
         "wiki_views": 410000,
@@ -188,10 +188,10 @@
         "search_score": 74.1
       },
       "score_breakdown": {
-        "wiki_component": 12.9239,
-        "news_component": 4.4998,
-        "search_component": 74.1,
-        "total": 91.5237,
+        "wiki_component": 26.7275,
+        "news_component": 16.2852,
+        "search_component": 24.7,
+        "total": 67.7127,
         "explanation": "Very high wikipedia traffic; high news coverage; high search interest."
       }
     },
@@ -213,7 +213,7 @@
         "2021年太魯閣號事故",
         "清水隧道事故"
       ],
-      "score": 88.7123,
+      "score": 66.8558,
       "signals": {
         "event_id": "8bcac3ac",
         "wiki_views": 380000,
@@ -221,10 +221,10 @@
         "search_score": 71.3
       },
       "score_breakdown": {
-        "wiki_component": 12.8479,
-        "news_component": 4.5643,
-        "search_component": 71.3,
-        "total": 88.7123,
+        "wiki_component": 26.5704,
+        "news_component": 16.5187,
+        "search_component": 23.7667,
+        "total": 66.8558,
         "explanation": "Very high wikipedia traffic; high news coverage; high search interest."
       }
     },
@@ -245,7 +245,7 @@
         "2022地方選舉",
         "九合一選舉2022"
       ],
-      "score": 80.2986,
+      "score": 62.1242,
       "signals": {
         "event_id": "454fb9f9",
         "wiki_views": 190000,
@@ -253,10 +253,10 @@
         "search_score": 63.8
       },
       "score_breakdown": {
-        "wiki_component": 12.1548,
-        "news_component": 4.3438,
-        "search_component": 63.8,
-        "total": 80.2986,
+        "wiki_component": 25.1369,
+        "news_component": 15.7206,
+        "search_component": 21.2667,
+        "total": 62.1242,
         "explanation": "Very high wikipedia traffic; high news coverage; moderate search interest."
       }
     },
@@ -277,7 +277,7 @@
         "台鐵1051021事故",
         "普悠瑪事故"
       ],
-      "score": 78.9314,
+      "score": 60.819,
       "signals": {
         "event_id": "e1863468",
         "wiki_views": 285000,
@@ -285,10 +285,10 @@
         "search_score": 62.5
       },
       "score_breakdown": {
-        "wiki_component": 12.5602,
-        "news_component": 3.8712,
-        "search_component": 62.5,
-        "total": 78.9314,
+        "wiki_component": 25.9755,
+        "news_component": 14.0102,
+        "search_component": 20.8333,
+        "total": 60.819,
         "explanation": "Very high wikipedia traffic; high news coverage; moderate search interest."
       }
     },
@@ -308,7 +308,7 @@
         "台北捷運隨機殺人事件",
         "鄭捷殺人事件"
       ],
-      "score": 75.0014,
+      "score": 60.2164,
       "signals": {
         "event_id": "e1c2a0a6",
         "wiki_views": 320000,
@@ -316,10 +316,10 @@
         "search_score": 58.3
       },
       "score_breakdown": {
-        "wiki_component": 12.6761,
-        "news_component": 4.0254,
-        "search_component": 58.3,
-        "total": 75.0014,
+        "wiki_component": 26.215,
+        "news_component": 14.5681,
+        "search_component": 19.4333,
+        "total": 60.2164,
         "explanation": "Very high wikipedia traffic; high news coverage; moderate search interest."
       }
     }

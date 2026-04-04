@@ -26,13 +26,45 @@ from core.pipeline import Pipeline
 
 
 class TestComputeScore:
+    # Normalisation constants mirrored from core.models for assertion math
+    _WIKI_LOG_MAX = math.log(10_000_001)
+    _NEWS_LOG_MAX = math.log(10_001)
+    _CMAX = 100.0 / 3.0
+
     def test_formula_values(self):
         s = Signals(event_id="e1", wiki_views=1000, news_count=50, search_score=60.0)
         bd = compute_score(s)
-        assert bd.wiki_component == pytest.approx(math.log(1001), rel=1e-6)
-        assert bd.news_component == pytest.approx(math.log(51), rel=1e-6)
-        assert bd.search_component == pytest.approx(60.0, rel=1e-6)
-        assert bd.total == pytest.approx(math.log(1001) + math.log(51) + 60.0, rel=1e-6)
+        expected_wiki = math.log(1001) / self._WIKI_LOG_MAX * self._CMAX
+        expected_news = math.log(51) / self._NEWS_LOG_MAX * self._CMAX
+        expected_search = 60.0 / 100.0 * self._CMAX
+        assert bd.wiki_component == pytest.approx(expected_wiki, rel=1e-6)
+        assert bd.news_component == pytest.approx(expected_news, rel=1e-6)
+        assert bd.search_component == pytest.approx(expected_search, rel=1e-6)
+        assert bd.total == pytest.approx(
+            expected_wiki + expected_news + expected_search, rel=1e-6
+        )
+
+    def test_score_always_at_most_100(self):
+        """Normalised score must never exceed 100 regardless of input magnitude."""
+        extreme = Signals(
+            event_id="max",
+            wiki_views=10_000_000,
+            news_count=10_000,
+            search_score=100.0,
+        )
+        bd = compute_score(extreme)
+        assert bd.total <= 100.0 + 1e-9  # allow tiny floating-point slack
+
+    def test_score_bounded_for_realistic_inputs(self):
+        """Real-world high-signal events (like COVID) must score ≤ 100."""
+        s = Signals(
+            event_id="covid",
+            wiki_views=1_540_000,
+            news_count=241,
+            search_score=95.2,
+        )
+        bd = compute_score(s)
+        assert bd.total <= 100.0
 
     def test_zero_signals(self):
         s = Signals(event_id="e0")

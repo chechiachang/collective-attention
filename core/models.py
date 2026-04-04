@@ -9,6 +9,13 @@ from dataclasses import dataclass, field
 from datetime import date
 from typing import List, Optional
 
+# ── Normalisation constants ───────────────────────────────────────────────────
+# Each signal component is scaled to [0, 100/3] so the combined score is
+# always in [0, 100] (three equal-weight components that each cap at ~33.33).
+_WIKI_LOG_MAX: float = math.log(10_000_001)  # log(10 M + 1) ≈ 16.12
+_NEWS_LOG_MAX: float = math.log(10_001)  # log(10 K + 1) ≈  9.21
+_COMPONENT_MAX: float = 100.0 / 3.0  # each component cap ≈ 33.33
+
 
 @dataclass
 class Signals:
@@ -87,17 +94,22 @@ def compute_score(
     search_weight: float = 1.0,
 ) -> ScoreBreakdown:
     """
-    Compute an explainable score from multi-source signals.  (Improvement #3)
+    Compute an explainable, normalised score from multi-source signals.
 
-    Formula::
+    Each of the three signal components is scaled to **[0, 100/3]**, so the
+    combined score is always in **[0, 100]**:
 
-        score = wiki_weight  * log(wiki_views  + 1)
-              + news_weight  * log(news_count  + 1)
-              + search_weight * search_score
+    ::
 
-    Configurable weights allow callers to rebalance the three components.
-    The +1 guards against log(0).  Default weights of 1.0 preserve the v1
-    behaviour so existing callers remain unaffected.
+        wiki_component   = wiki_weight   * log(wiki_views  + 1) / log(10_000_001) * (100/3)
+        news_component   = news_weight   * log(news_count  + 1) / log(10_001)     * (100/3)
+        search_component = search_weight * search_score / 100                      * (100/3)
+        score            = wiki_component + news_component + search_component
+
+    The ``+1`` guards against ``log(0)``.  The normalisation denominators are
+    generous upper bounds (10 M wiki-views, 10 K news articles) so real-world
+    events rarely hit the cap.  Default weights of 1.0 give each source equal
+    influence.
 
     Parameters
     ----------
@@ -110,9 +122,16 @@ def compute_score(
     search_weight : float
         Multiplier for the search-score component (default 1.0).
     """
-    wiki_component = wiki_weight * math.log(signals.wiki_views + 1)
-    news_component = news_weight * math.log(signals.news_count + 1)
-    search_component = search_weight * float(signals.search_score)  # 0–100 normalised
+    wiki_component = (
+        wiki_weight * math.log(signals.wiki_views + 1) / _WIKI_LOG_MAX * _COMPONENT_MAX
+    )
+    news_component = (
+        news_weight * math.log(signals.news_count + 1) / _NEWS_LOG_MAX * _COMPONENT_MAX
+    )
+    # search_score is already 0–100; scale to 0–(100/3) for equal weighting
+    search_component = (
+        search_weight * float(signals.search_score) / 100.0 * _COMPONENT_MAX
+    )
 
     total = wiki_component + news_component + search_component
 
