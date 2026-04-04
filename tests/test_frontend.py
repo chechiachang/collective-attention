@@ -267,6 +267,43 @@ class TestTimelineConsistency:
             "so timeline events are clickable"
         )
 
+    def test_toggle_card_elevates_timeline_item_z_index(self, html_content):
+        """toggleCard must raise the z-index of the parent .tl-prop-item so that
+        an expanded card is rendered above sibling absolutely-positioned items.
+
+        Without this fix, expanding a card in the proportional timeline is
+        visually invisible because later DOM siblings paint over the expanded
+        content (they are absolutely positioned in the same stacking context).
+        """
+        import re
+
+        match = re.search(
+            r"function toggleCard\b.*?^}",
+            html_content,
+            re.MULTILINE | re.DOTALL,
+        )
+        assert match, "function toggleCard not found"
+        code = match.group(0)
+        assert "tl-prop-item" in code, (
+            "toggleCard must reference tl-prop-item to update its z-index so that "
+            "expanded timeline cards are not hidden behind sibling items"
+        )
+        assert "zIndex" in code or "z-index" in code, (
+            "toggleCard must set z-index on the parent tl-prop-item so the expanded "
+            "card renders above other timeline items"
+        )
+
+    def test_css_timeline_item_z_index_on_expand(self, html_content):
+        """CSS must elevate .tl-prop-item when it contains an expanded card.
+
+        The :has() selector rule provides a CSS-native complement to the JS
+        z-index update and ensures the expanded card is always on top.
+        """
+        assert ".tl-prop-item:has(.event-card.expanded)" in html_content, (
+            "CSS must contain a .tl-prop-item:has(.event-card.expanded) rule to "
+            "elevate the expanded card above sibling timeline items"
+        )
+
 
 class TestSourceLinking:
     """The Wikipedia source link must be always visible in the card header."""

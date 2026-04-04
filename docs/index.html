@@ -197,6 +197,12 @@
       left: 120px;
       right: 0;
     }
+    /* Elevate an expanded card above sibling items (CSS-native complement to
+       the JS z-index update in toggleCard; :has() is widely supported in
+       modern browsers). */
+    .tl-prop-item:has(.event-card.expanded) {
+      z-index: 10;
+    }
     .tl-prop-item .tl-dot {
       left: -23px;
     }
@@ -541,7 +547,18 @@ function switchView(view) {
 
 function toggleCard(id) {
   const el = document.getElementById(`card-${id}`);
-  if (el) el.classList.toggle('expanded');
+  if (el) {
+    el.classList.toggle('expanded');
+    // In the timeline view cards are inside absolutely-positioned
+    // .tl-prop-item wrappers.  Without an explicit z-index the expanded
+    // card is painted over by sibling items that appear later in the DOM.
+    // Elevate the wrapper while the card is expanded so the details panel
+    // is always visible on top.
+    const tlItem = el.closest('.tl-prop-item');
+    if (tlItem) {
+      tlItem.style.zIndex = el.classList.contains('expanded') ? '10' : '';
+    }
+  }
 }
 
 function onNChange(val) {
