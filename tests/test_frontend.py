@@ -225,8 +225,15 @@ class TestTimelineConsistency:
             "start_date" in code
         ), "renderTimeline must handle events with no start_date"
 
-    def test_timeline_proportional_axis(self, html_content):
-        """renderTimeline must emit year and quarter axis tick labels."""
+    def test_timeline_uses_vis_library(self, html_content):
+        """renderTimeline must use vis-timeline for event positioning.
+
+        The previous custom proportional axis used position:absolute for every
+        event card in the same stacking context.  Expanded cards were painted
+        over by later siblings because no z-index differentiation existed.
+        Replacing the custom renderer with vis-timeline eliminates the problem
+        entirely: vis-timeline handles overlap resolution and stacking itself.
+        """
         import re
 
         match = re.search(
@@ -236,25 +243,24 @@ class TestTimelineConsistency:
         )
         assert match, "function renderTimeline not found"
         code = match.group(0)
-        # Year labels
-        assert "tl-axis-year" in code, (
-            "renderTimeline must emit year labels (class tl-axis-year) for a "
-            "proportional time axis"
-        )
-        # Quarter labels
-        assert "tl-axis-qtr" in code, (
-            "renderTimeline must emit quarter labels (class tl-axis-qtr) for a "
-            "proportional time axis"
-        )
-        # Fixed spacing constant
         assert (
-            "PX_PER_MONTH" in code
-        ), "renderTimeline must use a PX_PER_MONTH constant for consistent spacing"
+            "_visTimeline" in code or "vis.Timeline" in code or "vis.DataSet" in code
+        ), "renderTimeline must use the vis-timeline library (_visTimeline / vis.Timeline)"
+        # The CDN bundle must also be present in the page
+        assert (
+            "vis-timeline" in html_content
+        ), "vis-timeline CDN script must be referenced in the page"
 
     def test_timeline_cards_are_clickable(self, html_content):
-        """Cards in the timeline must use toggleCard so details can be expanded."""
+        """Events in the timeline must be clickable to reveal expandable detail cards."""
         import re
 
+        # The click handler wired inside renderTimeline calls toggleTimelineDetail,
+        # which calls buildCard to render the detail card.
+        assert "toggleTimelineDetail" in html_content, (
+            "renderTimeline must register a click handler that calls "
+            "toggleTimelineDetail so timeline events are interactive"
+        )
         match = re.search(
             r"function renderTimeline\b.*?^}",
             html_content,
@@ -262,10 +268,24 @@ class TestTimelineConsistency:
         )
         assert match, "function renderTimeline not found"
         code = match.group(0)
-        assert "buildCard" in code, (
-            "renderTimeline must call buildCard (which embeds the toggleCard handler) "
-            "so timeline events are clickable"
+        assert (
+            "click" in code or "toggleTimelineDetail" in code
+        ), "renderTimeline must wire up a click handler so timeline events open detail cards"
+
+    def test_toggle_timeline_detail_uses_build_card(self, html_content):
+        """toggleTimelineDetail must render the detail card via buildCard."""
+        import re
+
+        match = re.search(
+            r"function toggleTimelineDetail\b.*?^}",
+            html_content,
+            re.MULTILINE | re.DOTALL,
         )
+        assert match, "function toggleTimelineDetail not found"
+        code = match.group(0)
+        assert (
+            "buildCard" in code
+        ), "toggleTimelineDetail must call buildCard to render the event detail"
 
 
 class TestSourceLinking:
