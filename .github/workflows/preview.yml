@@ -26,4 +26,5 @@ jobs:
         with:
           source-dir: ./frontend/
           preview-branch: gh-pages
+          pages-base-url: https://chechiachang.github.io/collective-attention/
           qr-code: true
