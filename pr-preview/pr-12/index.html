@@ -156,98 +156,38 @@
     /* ── Timeline view ─────────────────────────────────────────────── */
     #timeline-view { display: none; }
 
-    /* Proportional timeline axis */
-    .tl-prop-axis {
-      position: relative;
-      padding-left: 120px;
-      min-height: 200px;
+    /* vis-timeline dark theme overrides */
+    .vis-timeline { border-color: #334155 !important; background: #131722 !important; }
+    .vis-time-axis .vis-text { color: #94a3b8 !important; }
+    .vis-time-axis .vis-grid.vis-minor { border-color: #1e293b !important; }
+    .vis-time-axis .vis-grid.vis-major { border-color: #334155 !important; }
+    .vis-panel.vis-center,
+    .vis-panel.vis-left,
+    .vis-panel.vis-right { border-color: #334155 !important; }
+    .vis-item {
+      background: #1e3a5f;
+      border-color: #3b82f6;
+      color: #e2e8f0;
+      border-radius: 6px;
+      cursor: pointer;
     }
-    .tl-prop-line {
-      position: absolute;
-      left: 104px;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: #334155;
+    .vis-item.vis-selected { background: #1e40af; border-color: #60a5fa; }
+    .vis-item .vis-item-content { padding: 4px 8px; }
+    .vis-item-title {
+      font-size: 0.8rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
+      display: block;
     }
-    /* Year tick: bold blue */
-    .tl-axis-year {
-      position: absolute;
-      left: 0;
-      width: 96px;
-      text-align: right;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #60a5fa;
-      line-height: 1.2;
-    }
-    /* Quarter tick: small grey */
-    .tl-axis-qtr {
-      position: absolute;
-      left: 0;
-      width: 96px;
-      text-align: right;
-      font-size: 0.68rem;
-      color: #475569;
-      line-height: 1.2;
-    }
-    /* Each event item in the proportional axis */
-    .tl-prop-item {
-      position: absolute;
-      left: 120px;
-      right: 0;
-    }
-    /* Elevate an expanded card above sibling items (CSS-native complement to
-       the JS z-index update in toggleCard; :has() is widely supported in
-       modern browsers). */
-    .tl-prop-item:has(.event-card.expanded) {
-      z-index: 10;
-    }
-    .tl-prop-item .tl-dot {
-      left: -23px;
-    }
-    /* Dot shared style */
-    .tl-dot {
-      position: absolute;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      border: 2px solid #3b82f6;
-      background: #0f1117;
-      top: 14px;
-      z-index: 1;
-    }
-    /* Fallback: simple list for undated events */
-    .timeline-axis {
-      position: relative;
-      padding-left: 120px;
-    }
-    .timeline-axis::before {
-      content: "";
-      position: absolute;
-      left: 104px;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: #334155;
-    }
-    .tl-year-label {
-      position: absolute;
-      left: 0;
-      font-size: 0.75rem;
-      color: #475569;
-      padding-top: 14px;
-      width: 96px;
-      text-align: right;
-    }
-    .tl-card {
-      margin-left: 24px;
-      margin-bottom: 16px;
-      position: relative;
-    }
-    .tl-card .tl-dot { left: 98px; }
+    /* Detail card shown below the vis-timeline when an event is clicked */
+    #tl-detail-panel { margin-top: 16px; }
+    /* Undated events listed below the vis-timeline */
+    #tl-undated-mount { margin-top: 24px; }
+    .tl-undated-label { font-size: 0.85rem; color: #475569; margin-bottom: 12px; }
 
-    /* Expand hint visible on timeline cards */
+    /* Expand hint visible on ranking/detail cards */
     .expand-hint {
       font-size: 0.7rem;
       color: #475569;
@@ -279,6 +219,14 @@
       .event-card .date-badge { margin-left: 0; }
     }
   </style>
+  <!-- vis-timeline: proper event timeline that avoids position:absolute stacking-context issues -->
+  <link rel="stylesheet"
+        href="https://unpkg.com/vis-timeline@7.7.3/styles/vis-timeline-graph2d.min.css"
+        integrity="sha384-N/4l0y8PNlO5uZuzP9PK3bAgJQ8ZChybZFXB2mpkZRUil/bui++mvYXPzPAHpbr6"
+        crossorigin="anonymous" />
+  <script src="https://unpkg.com/vis-timeline@7.7.3/standalone/umd/vis-timeline-graph2d.min.js"
+          integrity="sha384-MLX+7yEEPNEznaIWwQi2pBMODSBP6Qo6BOVpzjFWB0UkfEzEYsvHOo7ISLfcQeiI"
+          crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -312,6 +260,9 @@
 let allEvents   = [];          // full ranked list from the API
 let currentView = 'ranking';  // 'ranking' | 'timeline'
 let topN        = 10;
+let _visTimeline = null;      // vis-timeline instance (created lazily, cached)
+let _visItems    = null;      // vis-timeline DataSet (kept for incremental updates)
+let _tlEvents    = [];        // events currently shown in the timeline (for click handler)
 
 /* ────────────────────────────────────────────────────────────────────────
    Data loading
@@ -429,109 +380,99 @@ function renderRanking(events) {
 }
 
 function renderTimeline(events) {
-  // Sort chronologically; undated events go last
-  const sorted = [...events].sort((a, b) => {
-    if (!a.start_date && !b.start_date) return 0;
-    if (!a.start_date) return 1;
-    if (!b.start_date) return -1;
-    return a.start_date.localeCompare(b.start_date);
-  });
-
   const mx = maxScore(events);
-  const PX_PER_MONTH = 40;
+  const datedEvents   = events.filter(e => e.start_date);
+  const undatedEvents = events.filter(e => !e.start_date);
 
-  const datedEvents   = sorted.filter(e => e.start_date);
-  const undatedEvents = sorted.filter(e => !e.start_date);
+  // Keep a module-level snapshot so the click handler always sees current events
+  // (the click handler is registered only once; closing over `events` directly
+  // would capture a stale list when topN changes and renderTimeline is re-called)
+  _tlEvents = events;
 
-  // Fallback when no event has a date
-  if (!datedEvents.length) {
-    let html = '<div class="timeline-axis">';
-    for (const e of undatedEvents) {
-      html += `<div class="tl-card" style="position:relative">
-        <span class="tl-year-label">?</span>
-        <div class="tl-dot"></div>
-        ${buildCard(e, null, mx)}
-      </div>`;
-    }
-    html += '</div>';
-    document.getElementById('timeline-view').innerHTML = html;
+  const tlContainer = document.getElementById('timeline-view');
+
+  // (Re-)create sub-mounts when the container was cleared by showSpinner/error
+  if (!document.getElementById('vis-tl-mount')) {
+    if (_visTimeline) { _visTimeline.destroy(); _visTimeline = null; _visItems = null; }
+    tlContainer.innerHTML =
+      '<div id="vis-tl-mount" style="margin-bottom:16px"></div>' +
+      '<div id="tl-detail-panel"></div>' +
+      '<div id="tl-undated-mount"></div>';
+  }
+
+  // Clear any previously open detail card when events change (e.g. slider)
+  document.getElementById('tl-detail-panel').innerHTML = '';
+
+  const visItemsData = datedEvents.map(e => ({
+    id: e.id,
+    content: `<span class="vis-item-title">${escHtml(e.title)}</span>`,
+    start: e.start_date,
+    ...(e.end_date && e.end_date !== e.start_date ? { end: e.end_date } : {}),
+  }));
+
+  if (!_visTimeline) {
+    _visItems = new vis.DataSet(visItemsData);
+    const mount = document.getElementById('vis-tl-mount');
+    const sortedDates = datedEvents.map(e => e.start_date).sort();
+    const startWin = sortedDates.length
+      ? new Date(new Date(sortedDates[0]).getFullYear() - 1, 0, 1)
+      : new Date(2013, 0, 1);
+    const endWin = sortedDates.length
+      ? new Date(new Date(sortedDates[sortedDates.length - 1]).getFullYear() + 1, 11, 31)
+      : new Date(2025, 11, 31);
+    _visTimeline = new vis.Timeline(mount, _visItems, {
+      height: '380px',
+      start: startWin,
+      end: endWin,
+      orientation: { axis: 'top' },
+      zoomKey: 'ctrlKey',
+      showCurrentTime: false,
+      selectable: true,
+    });
+    _visTimeline.on('click', function (props) {
+      // Read _tlEvents so clicks always reflect the latest renderTimeline call
+      const curMx = maxScore(_tlEvents);
+      if (props.item) {
+        toggleTimelineDetail(props.item, _tlEvents, curMx);
+      } else {
+        document.getElementById('tl-detail-panel').innerHTML = '';
+        _visTimeline.setSelection([]);
+      }
+    });
+  } else {
+    _visItems.clear();
+    _visItems.add(visItemsData);
+  }
+
+  // Undated events listed below the vis-timeline widget
+  const undatedMount = document.getElementById('tl-undated-mount');
+  if (undatedEvents.length) {
+    undatedMount.innerHTML =
+      '<p class="tl-undated-label">— undated events —</p>' +
+      undatedEvents.map(e => buildCard(e, null, mx)).join('');
+  } else {
+    undatedMount.innerHTML = '';
+  }
+}
+
+function toggleTimelineDetail(eventId, events, mx) {
+  const panel = document.getElementById('tl-detail-panel');
+  // Toggle: clicking the same item a second time collapses the detail panel
+  if (panel.querySelector(`[id="${CSS.escape('card-' + eventId)}"]`)) {
+    panel.innerHTML = '';
+    if (_visTimeline) _visTimeline.setSelection([]);
     return;
   }
-
-  // Parse "YYYY-MM-DD" → { y, m } (m is 0-based)
-  function parseYM(s) {
-    return { y: parseInt(s.slice(0, 4), 10), m: parseInt(s.slice(5, 7), 10) - 1 };
-  }
-
-  // Axis bounds: 1 month before first event, 2 months after last event
-  const first = parseYM(datedEvents[0].start_date);
-  const last  = parseYM(datedEvents[datedEvents.length - 1].start_date);
-  let axisStartY = first.y, axisStartM = first.m - 1;
-  if (axisStartM < 0) { axisStartY--; axisStartM += 12; }
-  let axisEndY = last.y, axisEndM = last.m + 2;
-  if (axisEndM > 11) { axisEndY++; axisEndM -= 12; }
-
-  const totalMonths = (axisEndY - axisStartY) * 12 + (axisEndM - axisStartM);
-  const totalPx = totalMonths * PX_PER_MONTH;
-
-  function monthOffset(dateStr) {
-    const d = parseYM(dateStr);
-    return (d.y - axisStartY) * 12 + (d.m - axisStartM);
-  }
-
-  // Axis tick labels: year labels at January, quarter labels every 3 months
-  let labels = '';
-  for (let i = 0; i <= totalMonths; i++) {
-    const absM = axisStartM + i;
-    const yr   = axisStartY + Math.floor(absM / 12);
-    const mo   = ((absM % 12) + 12) % 12;
-    const top  = i * PX_PER_MONTH;
-    if (mo === 0) {
-      labels += `<div class="tl-axis-year" style="top:${top}px">${yr}</div>`;
-    } else if (mo % 3 === 0) {
-      labels += `<div class="tl-axis-qtr" style="top:${top}px">${yr}/${mo + 1}</div>`;
-    }
-  }
-
-  // Place events, shifting overlapping cards downward
-  const CARD_H = 110; // approximate collapsed card height (px)
-  const placed = [];
-  function placeTop(preferred) {
-    let top = preferred;
-    while (placed.some(t => Math.abs(t - top) < CARD_H)) top += CARD_H;
-    placed.push(top);
-    return top;
-  }
-
-  let items = '';
-  for (const e of datedEvents) {
-    const top = placeTop(monthOffset(e.start_date) * PX_PER_MONTH);
-    items += `<div class="tl-prop-item" style="top:${top}px">
-      <div class="tl-dot"></div>
-      ${buildCard(e, null, mx)}
-    </div>`;
-  }
-
-  // Undated events appended after the axis
-  for (const e of undatedEvents) {
-    const top = placeTop(totalPx + PX_PER_MONTH);
-    items += `<div class="tl-prop-item" style="top:${top}px">
-      <span class="tl-axis-year" style="left:-120px">?</span>
-      <div class="tl-dot"></div>
-      ${buildCard(e, null, mx)}
-    </div>`;
-  }
-
-  const totalHeight = placed.length
-    ? Math.max(totalPx, Math.max(...placed) + 200)
-    : totalPx + 200;
-
-  document.getElementById('timeline-view').innerHTML = `
-    <div class="tl-prop-axis" style="height:${totalHeight}px">
-      <div class="tl-prop-line"></div>
-      ${labels}
-      ${items}
-    </div>`;
+  const event = events.find(e => e.id === eventId);
+  if (!event) return;
+  if (_visTimeline) _visTimeline.setSelection([eventId]);
+  panel.innerHTML = buildCard(event, null, mx);
+  // Use querySelector scoped to the panel to avoid matching the ranking-view
+  // card that shares the same id — document.getElementById returns the first
+  // match in document order, which would be the (hidden) ranking card.
+  const card = panel.querySelector(`[id="${CSS.escape('card-' + eventId)}"]`);
+  if (card) card.classList.add('expanded');
+  if (typeof panel.scrollIntoView === 'function') panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 /* ────────────────────────────────────────────────────────────────────────
@@ -543,22 +484,14 @@ function switchView(view) {
   document.getElementById('timeline-view').style.display = (view === 'timeline') ? 'block' : 'none';
   document.getElementById('btn-ranking').classList.toggle('active',  view === 'ranking');
   document.getElementById('btn-timeline').classList.toggle('active', view === 'timeline');
+  // vis-timeline needs an explicit redraw after its container transitions from
+  // display:none to display:block — otherwise item positions are miscalculated.
+  if (view === 'timeline' && _visTimeline) _visTimeline.redraw();
 }
 
 function toggleCard(id) {
   const el = document.getElementById(`card-${id}`);
-  if (el) {
-    el.classList.toggle('expanded');
-    // In the timeline view cards are inside absolutely-positioned
-    // .tl-prop-item wrappers.  Without an explicit z-index the expanded
-    // card is painted over by sibling items that appear later in the DOM.
-    // Elevate the wrapper while the card is expanded so the details panel
-    // is always visible on top.
-    const tlItem = el.closest('.tl-prop-item');
-    if (tlItem) {
-      tlItem.style.zIndex = el.classList.contains('expanded') ? '10' : '';
-    }
-  }
+  if (el) el.classList.toggle('expanded');
 }
 
 function onNChange(val) {
