@@ -6,6 +6,13 @@ A data pipeline and API that quantifies which real-world events people collectiv
 
 ---
 
+## Deployment Status
+
+[![Deploy Pages Site](https://github.com/chechiachang/collective-attention/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/chechiachang/collective-attention/actions/workflows/deploy-pages.yml)
+[![Deploy PR Preview](https://github.com/chechiachang/collective-attention/actions/workflows/preview.yml/badge.svg)](https://github.com/chechiachang/collective-attention/actions/workflows/preview.yml)
+
+---
+
 ## What It Does
 
 The system answers:
@@ -239,7 +246,7 @@ When you open or update a pull request, a live preview of `docs/index.html` is a
 deployed to GitHub Pages and linked in a PR comment:
 
 ```
-https://chechia.net/collective-attention/pr-preview/pr-<number>/
+https://collective-attention.chechia.net/pr-preview/pr-<number>/
 ```
 
 ---

@@ -26,5 +26,5 @@ jobs:
         with:
           source-dir: ./docs/
           preview-branch: gh-pages
-          pages-base-url: collective-attention.chechia.net
+          pages-base-url: https://collective-attention.chechia.net
           qr-code: true
