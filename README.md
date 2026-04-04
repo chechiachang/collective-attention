@@ -235,6 +235,13 @@ collective-attention/
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
+When you open or update a pull request, a live preview of `frontend/index.html` is automatically
+deployed to GitHub Pages and linked in a PR comment:
+
+```
+https://chechiachang.github.io/collective-attention/pr-preview/pr-<number>/
+```
+
 ---
 
 ## License
