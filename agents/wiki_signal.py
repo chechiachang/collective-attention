@@ -32,6 +32,7 @@ PAGEVIEWS_API = (
 )
 REQUEST_TIMEOUT = 10  # seconds
 _CACHE_AGENT = "wiki_signal"
+PAGEVIEWS_AVAILABLE_START = date(2015, 7, 1)
 
 
 class WikiSignalAgent:
@@ -164,6 +165,16 @@ class WikiSignalAgent:
         # Expand range
         start = start - timedelta(days=30 * self.months_before)
         end = end + timedelta(days=30 * self.months_after)
+
+        # Wikimedia pageviews do not exist before mid-2015. For older
+        # events, fall back to the full available retrospective window
+        # instead of returning a guaranteed zero.
+        if end < PAGEVIEWS_AVAILABLE_START:
+            return PAGEVIEWS_AVAILABLE_START, self.default_end
+
+        if start < PAGEVIEWS_AVAILABLE_START:
+            start = PAGEVIEWS_AVAILABLE_START
+
         return start, end
 
     def _fetch_pageviews_cached(

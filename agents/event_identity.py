@@ -12,6 +12,7 @@ Uses the Wikipedia REST API (no API key required):
 from __future__ import annotations
 
 import logging
+import re
 from typing import List, Optional
 
 import requests
@@ -54,13 +55,19 @@ class EventIdentityAgent:
         Populate event.canonical_wiki_title and event.wiki_redirect_pages.
         Modifies the event object in place.
         """
-        query = event.title
-        canonical, redirects = self._resolve_title(query, self.lang)
+        canonical = None
+        redirects: List[str] = []
+
+        for query in self._query_candidates(event):
+            canonical, redirects = self._resolve_title(query, self.lang)
+            if canonical is not None:
+                break
 
         if canonical is None and self.fallback_lang:
-            # Try English with the first keyword
-            alt_query = event.keywords[0] if event.keywords else query
-            canonical, redirects = self._resolve_title(alt_query, self.fallback_lang)
+            for query in self._query_candidates(event):
+                canonical, redirects = self._resolve_title(query, self.fallback_lang)
+                if canonical is not None:
+                    break
 
         event.canonical_wiki_title = canonical
         event.wiki_redirect_pages = redirects
@@ -74,6 +81,21 @@ class EventIdentityAgent:
     # ------------------------------------------------------------------
     # Private helpers
     # ------------------------------------------------------------------
+
+    def _query_candidates(self, event: Event) -> List[str]:
+        """Generate title and keyword queries in priority order."""
+        candidates: List[str] = []
+
+        def add(query: str) -> None:
+            query = query.strip()
+            if query and query not in candidates:
+                candidates.append(query)
+
+        add(event.title)
+        add(re.sub(r"^\d{4}年", "", event.title))
+        for keyword in event.keywords[:3]:
+            add(keyword)
+        return candidates
 
     def _resolve_title(self, query: str, lang: str) -> tuple[Optional[str], List[str]]:
         """

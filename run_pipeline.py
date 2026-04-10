@@ -3,6 +3,7 @@ run_pipeline.py – Collective Attention System runnable pipeline entry point.
 
 Usage:
     python run_pipeline.py [--top N] [--output path/to/output.json] [--report path/to/report.md]
+    python run_pipeline.py --seed-file data/tw_1986_2026.json --no-default-seeds --use-gdelt
     python run_pipeline.py --mock           # use offline demo data (no internet needed)
 
 This script:
@@ -236,9 +237,11 @@ def _save_markdown(events: List[Event], path: str, is_mock: bool = False) -> Non
     lines.append("## Scoring Formula")
     lines.append("")
     lines.append("```")
-    lines.append("score = log(wiki_views + 1)   # Wikipedia component")
-    lines.append("      + log(news_count + 1)   # News component")
-    lines.append("      + search_score          # Google Trends component (0–100)")
+    lines.append("score = weighted_wiki + weighted_news + weighted_search")
+    lines.append("weighted_* = normalized_signal * era_weight_share * 100")
+    lines.append(
+        "era weights rebalance sources when older events lack modern search/news coverage"
+    )
     lines.append("```")
     lines.append("")
     lines.append("---")
@@ -306,9 +309,9 @@ def _save_markdown(events: List[Event], path: str, is_mock: bool = False) -> Non
     lines.append("## Improvement Suggestions")
     lines.append("")
     lines.append(
-        "1. **Historical news signal** ✅ – `NewsSignalAgent` now supports a `use_gdelt=True`"
-        " parameter that queries the GDELT DOC 2.0 API for historical article counts keyed to"
-        " event date ranges, supplementing the RSS signal with years of archive data."
+        "1. **Historical news signals** ✅ – `NewsSignalAgent` now supports both GDELT and"
+        " Wikinews archive lookups, giving older events a second historical news source when"
+        " RSS coverage is unavailable."
     )
     lines.append(
         "2. **Search signal rate-limit** ✅ – `SearchSignalAgent` now retries up to"
@@ -316,10 +319,9 @@ def _save_markdown(events: List[Event], path: str, is_mock: bool = False) -> Non
         " pytrends failure, dramatically reducing the impact of HTTP 429 throttling."
     )
     lines.append(
-        "3. **Score normalisation** ✅ – `compute_score()` now accepts `wiki_weight`,"
-        " `news_weight`, and `search_weight` parameters so callers can re-balance the three"
-        " components without touching the formula.  Default weights of 1.0 preserve backward"
-        " compatibility."
+        "3. **Era-aware scoring** ✅ – `ScoringAgent` now chooses source weights by era,"
+        " and `compute_score()` normalises those weights so older events are not penalised for"
+        " missing modern-only signals such as Google Trends."
     )
     lines.append(
         "4. **Event deduplication** ✅ – `EventDetectionAgent` now uses Jaccard keyword-overlap"
@@ -340,6 +342,11 @@ def _save_markdown(events: List[Event], path: str, is_mock: bool = False) -> Non
         " pageviews in addition to the primary Chinese article when `include_en=True`"
         " (the new default).  Avoids under-counting for internationally notable events"
         " such as COVID-19 and the Pelosi visit."
+    )
+    lines.append(
+        "8. **Identity fallback heuristics** ✅ – `EventIdentityAgent` now retries stripped"
+        " titles and top keywords in Chinese before falling back to English, improving cases"
+        " such as historical Taiwanese events whose seed titles include years or generic suffixes."
     )
     lines.append("")
 
@@ -370,6 +377,22 @@ def main() -> None:
         help="Optional RSS feed URL to ingest additional events",
     )
     parser.add_argument(
+        "--seed-file",
+        type=str,
+        default=None,
+        metavar="FILE",
+        help=(
+            "Optional JSON event catalog to load in addition to the built-in seeds. "
+            "Use with --no-default-seeds to run on a custom historical dataset."
+        ),
+    )
+    parser.add_argument(
+        "--no-default-seeds",
+        action="store_false",
+        dest="include_seeds",
+        help="Exclude the built-in demo seed events and use only --seed-file and/or RSS",
+    )
+    parser.add_argument(
         "--output",
         type=str,
         default=None,
@@ -392,17 +415,37 @@ def main() -> None:
             "Useful for offline/CI environments."
         ),
     )
+    parser.add_argument(
+        "--use-gdelt",
+        action="store_true",
+        default=False,
+        help="Supplement RSS counts with GDELT historical archive counts",
+    )
+    parser.add_argument(
+        "--trends-timeframe",
+        type=str,
+        default="2014-01-01 2024-12-31",
+        metavar="START END",
+        help=(
+            "Google Trends timeframe in pytrends format, for example "
+            "'2004-01-01 2026-12-31'"
+        ),
+    )
     args = parser.parse_args()
 
     pipeline = Pipeline(
         event_detection_agent=EventDetectionAgent(
             rss_url=args.rss,
-            include_seeds=True,
+            include_seeds=args.include_seeds,
+            seed_file=args.seed_file,
         ),
         event_identity_agent=EventIdentityAgent(),
         wiki_signal_agent=WikiSignalAgent(),
-        news_signal_agent=NewsSignalAgent(),
-        search_signal_agent=SearchSignalAgent(fallback_score=0.0),
+        news_signal_agent=NewsSignalAgent(use_gdelt=args.use_gdelt),
+        search_signal_agent=SearchSignalAgent(
+            fallback_score=0.0,
+            timeframe=args.trends_timeframe,
+        ),
         scoring_agent=ScoringAgent(),
     )
 

@@ -81,10 +81,11 @@ class SearchSignalAgent:
             return
 
         keyword = event.keywords[0] if event.keywords else event.title
+        cache_key = f"{keyword}|{self.anchor_keyword}|{self.geo}|{self.timeframe}"
 
         # Improvement #5 – check disk cache first
         if self.use_cache:
-            cached = default_cache.get(_CACHE_AGENT, keyword)
+            cached = default_cache.get(_CACHE_AGENT, cache_key)
             if cached is not None:
                 event.signals.search_score = float(cached)
                 logger.info(
@@ -99,7 +100,7 @@ class SearchSignalAgent:
 
         # Improvement #5 – persist to disk
         if self.use_cache:
-            default_cache.set(_CACHE_AGENT, keyword, score)
+            default_cache.set(_CACHE_AGENT, cache_key, score)
 
         logger.info(
             "SearchSignalAgent: '%s' search_score=%.2f (keyword='%s')",
@@ -118,12 +119,13 @@ class SearchSignalAgent:
             try:
                 from pytrends.request import TrendReq  # type: ignore
 
+                # pytrends' internal retry adapter is not compatible with the
+                # urllib3 version bundled in this environment, so retry logic
+                # stays in this class instead of TrendReq itself.
                 self._pytrends = TrendReq(
                     hl="zh-TW",
                     tz=480,
                     timeout=(10, 25),
-                    retries=1,
-                    backoff_factor=0.5,
                 )
             except ImportError:
                 logger.warning("pytrends not installed – search scores will be zero")

@@ -7,6 +7,7 @@ suite is fully offline and fast.
 
 from __future__ import annotations
 
+import json
 import math
 from datetime import date
 from unittest.mock import MagicMock
@@ -29,20 +30,28 @@ class TestComputeScore:
     # Normalisation constants mirrored from core.models for assertion math
     _WIKI_LOG_MAX = math.log(10_000_001)
     _NEWS_LOG_MAX = math.log(10_001)
-    _CMAX = 100.0 / 3.0
 
     def test_formula_values(self):
         s = Signals(event_id="e1", wiki_views=1000, news_count=50, search_score=60.0)
         bd = compute_score(s)
-        expected_wiki = math.log(1001) / self._WIKI_LOG_MAX * self._CMAX
-        expected_news = math.log(51) / self._NEWS_LOG_MAX * self._CMAX
-        expected_search = 60.0 / 100.0 * self._CMAX
+        expected_wiki = math.log(1001) / self._WIKI_LOG_MAX * (100.0 / 3.0)
+        expected_news = math.log(51) / self._NEWS_LOG_MAX * (100.0 / 3.0)
+        expected_search = 60.0 / 3.0
         assert bd.wiki_component == pytest.approx(expected_wiki, rel=1e-6)
         assert bd.news_component == pytest.approx(expected_news, rel=1e-6)
         assert bd.search_component == pytest.approx(expected_search, rel=1e-6)
         assert bd.total == pytest.approx(
             expected_wiki + expected_news + expected_search, rel=1e-6
         )
+
+    def test_formula_reweights_when_a_source_is_disabled(self):
+        s = Signals(event_id="e1", wiki_views=1000, news_count=50, search_score=60.0)
+        bd = compute_score(s, wiki_weight=0.75, news_weight=0.25, search_weight=0.0)
+        expected_wiki = math.log(1001) / self._WIKI_LOG_MAX * 75.0
+        expected_news = math.log(51) / self._NEWS_LOG_MAX * 25.0
+        assert bd.wiki_component == pytest.approx(expected_wiki, rel=1e-6)
+        assert bd.news_component == pytest.approx(expected_news, rel=1e-6)
+        assert bd.search_component == pytest.approx(0.0, abs=1e-9)
 
     def test_score_always_at_most_100(self):
         """Normalised score must never exceed 100 regardless of input magnitude."""
@@ -168,6 +177,50 @@ class TestEventDetectionAgent:
         events = agent.detect()
         assert len(events) == len(SEED_EVENTS)
 
+    def test_seed_file_adds_historical_events(self, tmp_path):
+        seed_file = tmp_path / "historical_events.json"
+        seed_file.write_text(
+            json.dumps(
+                [
+                    {
+                        "title": "1999年921大地震",
+                        "keywords": ["921", "集集地震", "大地震"],
+                        "start_date": "1999-09-21",
+                        "end_date": "1999-09-21",
+                    }
+                ],
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+
+        agent = EventDetectionAgent(include_seeds=True, seed_file=str(seed_file))
+        titles = {event.title for event in agent.detect()}
+        assert "1999年921大地震" in titles
+        assert "太陽花學運" in titles
+
+    def test_seed_file_can_replace_default_seeds(self, tmp_path):
+        seed_file = tmp_path / "historical_only.json"
+        seed_file.write_text(
+            json.dumps(
+                [
+                    {
+                        "title": "1986年重大事件",
+                        "keywords": ["1986", "歷史事件"],
+                        "start_date": "1986-01-01",
+                    }
+                ],
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+
+        agent = EventDetectionAgent(include_seeds=False, seed_file=str(seed_file))
+        events = agent.detect()
+        assert len(events) == 1
+        assert events[0].title == "1986年重大事件"
+        assert events[0].start_date == date(1986, 1, 1)
+
 
 # ---------------------------------------------------------------------------
 # agents.event_identity
@@ -229,6 +282,29 @@ class TestEventIdentityAgent:
         assert event.canonical_wiki_title is None
         assert event.wiki_redirect_pages == []
 
+    def test_resolve_tries_keyword_after_title(self, requests_mock):
+        agent = EventIdentityAgent(lang="zh", fallback_lang="")
+        event = self._make_event("2013年洪仲丘事件", ["洪仲丘", "白衫軍"])
+
+        requests_mock.get(
+            "https://zh.wikipedia.org/w/api.php",
+            [
+                {"json": {"query": {"search": []}}},
+                {"json": {"query": {"search": []}}},
+                {"json": {"query": {"search": [{"title": "洪仲丘事件"}]}}},
+                {
+                    "json": {
+                        "query": {
+                            "pages": {"1": {"title": "洪仲丘事件", "redirects": []}}
+                        }
+                    }
+                },
+            ],
+        )
+
+        agent.resolve(event)
+        assert event.canonical_wiki_title == "洪仲丘事件"
+
 
 # ---------------------------------------------------------------------------
 # agents.wiki_signal
@@ -249,7 +325,7 @@ class TestWikiSignalAgent:
     def test_fetch_aggregates_views(self, requests_mock):
         import re
 
-        agent = WikiSignalAgent(lang="zh")
+        agent = WikiSignalAgent(lang="zh", use_cache=False)
         event = self._make_event_with_canonical(
             "普悠瑪列車出軌事故",
             "普悠瑪列車出軌事故",
@@ -273,7 +349,7 @@ class TestWikiSignalAgent:
     def test_fetch_skips_404(self, requests_mock):
         import re
 
-        agent = WikiSignalAgent(lang="zh")
+        agent = WikiSignalAgent(lang="zh", use_cache=False)
         event = self._make_event_with_canonical("Some Event", "NonExistentPage")
         event.start_date = date(2014, 1, 1)
         event.end_date = date(2014, 1, 1)
@@ -286,7 +362,7 @@ class TestWikiSignalAgent:
         assert event.signals.wiki_views == 0
 
     def test_fetch_no_canonical_skips(self):
-        agent = WikiSignalAgent(lang="zh")
+        agent = WikiSignalAgent(lang="zh", use_cache=False)
         event = Event(
             id="x",
             title="No Wiki",
@@ -294,6 +370,16 @@ class TestWikiSignalAgent:
         )
         agent.fetch(event)
         assert event.signals.wiki_views == 0
+
+    def test_old_events_use_retrospective_pageview_window(self):
+        agent = WikiSignalAgent(lang="zh", use_cache=False)
+        event = self._make_event_with_canonical("921大地震", "921大地震")
+        event.start_date = date(1999, 9, 21)
+        event.end_date = date(1999, 9, 21)
+
+        start, end = agent._date_range(event)
+        assert start == date(2015, 7, 1)
+        assert end == agent.default_end
 
 
 # ---------------------------------------------------------------------------
@@ -312,7 +398,7 @@ class TestNewsSignalAgent:
         )
 
     def test_count_matching_articles(self, mocker):
-        agent = NewsSignalAgent(rss_feeds=["http://fake.feed/rss"])
+        agent = NewsSignalAgent(rss_feeds=["http://fake.feed/rss"], use_wikinews=False)
 
         fake_feed = MagicMock()
         fake_feed.entries = [
@@ -327,7 +413,11 @@ class TestNewsSignalAgent:
         assert event.signals.news_count == 2
 
     def test_fallback_count_on_failure(self, mocker):
-        agent = NewsSignalAgent(rss_feeds=["http://bad.feed/rss"], fallback_count=42)
+        agent = NewsSignalAgent(
+            rss_feeds=["http://bad.feed/rss"],
+            fallback_count=42,
+            use_wikinews=False,
+        )
         mocker.patch("feedparser.parse", side_effect=Exception("network error"))
 
         event = self._make_event("Test", ["keyword"])
@@ -335,10 +425,38 @@ class TestNewsSignalAgent:
         assert event.signals.news_count == 42
 
     def test_no_keywords_uses_fallback(self):
-        agent = NewsSignalAgent(rss_feeds=[], fallback_count=99)
+        agent = NewsSignalAgent(rss_feeds=[], fallback_count=99, use_wikinews=False)
         event = self._make_event("Test", [])
         agent.fetch(event)
         assert event.signals.news_count == 99
+
+    def test_gdelt_falls_back_to_timeline_mode(self):
+        agent = NewsSignalAgent(rss_feeds=[], use_gdelt=True)
+        event = self._make_event("Historical", ["歷史事件", "台灣"])
+        event.start_date = date(1999, 9, 21)
+        event.end_date = date(1999, 9, 21)
+
+        first = MagicMock(status_code=200)
+        first.json.side_effect = ValueError("invalid json")
+        second = MagicMock(status_code=200)
+        second.json.return_value = {
+            "timeline": [{"value": 3}, {"value": 7}],
+        }
+        agent._session.get = MagicMock(side_effect=[first, second])
+
+        assert agent._count_gdelt(event) == 10
+
+    def test_wikinews_counts_hits(self):
+        agent = NewsSignalAgent(rss_feeds=[], use_gdelt=False, use_wikinews=True)
+        event = self._make_event("Historical", ["歷史事件", "台灣"])
+
+        zh_response = MagicMock(status_code=200)
+        zh_response.json.return_value = {"query": {"searchinfo": {"totalhits": 12}}}
+        en_response = MagicMock(status_code=200)
+        en_response.json.return_value = {"query": {"searchinfo": {"totalhits": 3}}}
+        agent._session.get = MagicMock(side_effect=[zh_response, en_response])
+
+        assert agent._count_wikinews(event) == 15
 
 
 # ---------------------------------------------------------------------------
@@ -375,6 +493,21 @@ class TestScoringAgent:
         agent.score(event)
         assert event.score == 0.0
         assert event.score_breakdown is None
+
+    def test_historical_weights_disable_search(self):
+        agent = ScoringAgent()
+        event = Event(
+            id="old",
+            title="Old Event",
+            start_date=date(1999, 9, 21),
+            signals=Signals(
+                event_id="old", wiki_views=1000, news_count=50, search_score=80.0
+            ),
+        )
+
+        agent.score(event)
+        assert event.score_breakdown is not None
+        assert event.score_breakdown.search_component == pytest.approx(0.0, abs=1e-9)
 
 
 # ---------------------------------------------------------------------------
@@ -532,3 +665,9 @@ class TestAPI:
         client = TestClient(app)
         response = client.get("/events/top")
         assert response.status_code == 503
+
+    def test_bundled_output_artifact_is_served(self):
+        client = TestClient(app)
+        response = client.get("/output/results.json")
+        assert response.status_code == 200
+        assert response.json()["events"]

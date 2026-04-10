@@ -107,10 +107,15 @@ class TestRequiredIDs:
         "timeline-view",
         "controls",
         "status",
+        "data-source",
         "n-slider",
         "n-label",
         "btn-ranking",
         "btn-timeline",
+        "timeline-controls",
+        "timeline-year-filter",
+        "timeline-zoom",
+        "timeline-zoom-label",
     ]
 
     def test_required_ids_present(self, html_content):
@@ -143,7 +148,16 @@ class TestJavaScriptFunctions:
         "function switchView",
         "function toggleCard",
         "function onNChange",
+        "function onDataSourceChange",
+        "function onTimelineYearFilterChange",
+        "function onTimelineZoomChange",
+        "function fitTimeline",
         "function buildCard",
+        "function buildTimelineOverview",
+        "function jumpToTimelineYear",
+        "function focusTimelineYear",
+        "function clearTimelineYearFilter",
+        "function syncTimelineYearFilter",
     ]
 
     def test_required_functions_defined(self, html_content):
@@ -161,6 +175,9 @@ class TestAPIEndpoints:
     def test_fallback_to_results_json(self, html_content):
         assert "results.json" in html_content
 
+    def test_references_historical_results_json(self, html_content):
+        assert "results_1986_2026.json" in html_content
+
 
 class TestSlider:
     def test_slider_has_min_max(self, html_content):
@@ -170,6 +187,18 @@ class TestSlider:
 
     def test_slider_calls_on_n_change(self, html_content):
         assert "onNChange" in html_content
+
+    def test_timeline_zoom_slider_exists(self, html_content):
+        assert 'id="timeline-zoom"' in html_content
+        assert "onTimelineZoomChange" in html_content
+
+    def test_timeline_year_filter_exists(self, html_content):
+        assert 'id="timeline-year-filter"' in html_content
+        assert "onTimelineYearFilterChange" in html_content
+
+    def test_data_source_selector_exists(self, html_content):
+        assert 'id="data-source"' in html_content
+        assert "onDataSourceChange" in html_content
 
 
 class TestTimelineConsistency:
@@ -193,6 +222,10 @@ class TestTimelineConsistency:
         assert "? 'block' : 'none'" in code or '? "block" : "none"' in code, (
             "switchView must use 'block' (not empty string) to show views; "
             "setting display='' reverts to the CSS display:none rule"
+        )
+        assert "timeline-controls" in code, (
+            "switchView must also toggle the timeline controls so zoom tools only "
+            "appear in timeline mode"
         )
 
     def test_render_calls_both_ranking_and_timeline(self, html_content):
@@ -286,6 +319,15 @@ class TestTimelineConsistency:
         assert (
             "buildCard" in code
         ), "toggleTimelineDetail must call buildCard to render the event detail"
+
+    def test_timeline_has_year_overview(self, html_content):
+        assert "timeline-overview" in html_content
+        assert "timeline-density-chart" in html_content
+        assert "focusTimelineYear" in html_content
+
+    def test_timeline_can_clear_year_filter(self, html_content):
+        assert "clearTimelineYearFilter" in html_content
+        assert "timeline-clear-btn" in html_content
 
 
 class TestSourceLinking:

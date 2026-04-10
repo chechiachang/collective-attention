@@ -100,7 +100,41 @@ uv run python run_pipeline.py
 
 # Custom top-N and live RSS ingestion
 uv run python run_pipeline.py --top 20 --rss https://example.com/feed.xml
+
+# Historical catalog mode: load your own event list and supplement news with GDELT
+uv run python run_pipeline.py \
+  --seed-file data/tw_1986_2026.json \
+  --no-default-seeds \
+  --use-gdelt \
+  --trends-timeframe "2004-01-01 2026-12-31" \
+  --top 200 \
+  --output output/results.json
 ```
+
+Seed catalog JSON format:
+
+```json
+[
+  {
+    "title": "1999年921大地震",
+    "keywords": ["921", "集集地震", "大地震"],
+    "start_date": "1999-09-21",
+    "end_date": "1999-09-21"
+  }
+]
+```
+
+## Collecting 40 Years Of Data
+
+The current demo pipeline does not discover "all events" across 40 years by itself. To scale it beyond the built-in sample, use a curated historical seed catalog via `--seed-file` and then fetch signals for each event.
+
+Practical source coverage limits:
+
+- Google Trends is only useful from roughly 2004 onward, so a 40-year run will have no comparable search signal before that.
+- Wikimedia pageviews are modern web-era data, not a full 40-year archive, so older events will often score mainly from later retrospective attention.
+- RSS is inherently current, not historical. For older events, enable `--use-gdelt` so news counts come from an archive rather than live feeds.
+
+For a serious 40-year Taiwan corpus, the next step is to build or import a larger event catalog first, for example from Wikipedia year pages, Wikidata, government chronology datasets, or manually curated seed files.
 
 ---
 
@@ -135,7 +169,6 @@ uv run uvicorn api.main:app --reload
         "wiki_component": 11.92,
         "news_component": 4.39,
         "search_component": 42.50,
-        "total": 58.81,
         "explanation": "High Wikipedia traffic; high news coverage; moderate search interest."
       },
       "signals": {

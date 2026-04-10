@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import logging
 from datetime import date, timedelta
+from json import JSONDecodeError
 from typing import List, Optional
 
 import requests
@@ -31,12 +32,18 @@ logger = logging.getLogger(__name__)
 
 REQUEST_TIMEOUT = 10  # seconds
 _CACHE_AGENT = "news_signal"
+WIKINEWS_API_URL = "https://{lang}.wikinews.org/w/api.php"
 
 # GDELT DOC 2.0 API (improvement #1)
 GDELT_API_URL = (
     "https://api.gdeltproject.org/api/v2/doc/doc"
     "?query={query}&mode=artlist&format=json"
     "&startdatetime={start}&enddatetime={end}&maxrecords=250"
+)
+GDELT_TIMELINE_API_URL = (
+    "https://api.gdeltproject.org/api/v2/doc/doc"
+    "?query={query}&mode=timelinevolraw&format=json"
+    "&startdatetime={start}&enddatetime={end}"
 )
 
 # Public RSS feeds that cover Taiwan news (Chinese)
@@ -70,11 +77,13 @@ class NewsSignalAgent:
         rss_feeds: Optional[List[str]] = None,
         fallback_count: int = 0,
         use_gdelt: bool = False,
+        use_wikinews: bool = True,
         use_cache: bool = True,
     ):
         self.rss_feeds = rss_feeds if rss_feeds is not None else DEFAULT_RSS_FEEDS
         self.fallback_count = fallback_count
         self.use_gdelt = use_gdelt
+        self.use_wikinews = use_wikinews
         self.use_cache = use_cache
         self._session = requests.Session()
         self._session.headers.update(
@@ -99,7 +108,11 @@ class NewsSignalAgent:
             return
 
         # Improvement #5 – check disk cache first
-        cache_key = f"{event.id}:{','.join(keywords)}"
+        date_key = f"{event.start_date}:{event.end_date}"
+        cache_key = (
+            f"{event.id}:{','.join(keywords)}:{date_key}:"
+            f"gdelt={self.use_gdelt}:wikinews={self.use_wikinews}"
+        )
         if self.use_cache:
             cached = default_cache.get(_CACHE_AGENT, cache_key)
             if cached is not None:
@@ -130,6 +143,16 @@ class NewsSignalAgent:
                     "NewsSignalAgent: '%s' gdelt_count=%d", event.title, gdelt_count
                 )
                 total += gdelt_count
+
+        if self.use_wikinews:
+            wikinews_count = self._count_wikinews(event)
+            if wikinews_count:
+                logger.info(
+                    "NewsSignalAgent: '%s' wikinews_count=%d",
+                    event.title,
+                    wikinews_count,
+                )
+                total += wikinews_count
 
         if total == 0 and self.fallback_count:
             total = self.fallback_count
@@ -184,20 +207,77 @@ class NewsSignalAgent:
 
         import urllib.parse
 
+        query_terms = event.keywords[:3] if event.keywords else [keyword]
+        query = " OR ".join(f'"{term}"' for term in query_terms)
         url = GDELT_API_URL.format(
-            query=urllib.parse.quote(keyword),
+            query=urllib.parse.quote(query),
             start=start_str,
             end=end_str,
         )
         try:
             resp = self._session.get(url, timeout=REQUEST_TIMEOUT)
-            if resp.status_code != 200:
+            if resp.status_code == 200:
+                try:
+                    data = resp.json()
+                except (JSONDecodeError, ValueError) as exc:
+                    logger.warning(
+                        "NewsSignalAgent: GDELT returned non-JSON data for '%s': %s",
+                        keyword,
+                        exc,
+                    )
+                    data = {}
+                articles = data.get("articles", [])
+                if articles:
+                    return len(articles)
+
+            timeline_url = GDELT_TIMELINE_API_URL.format(
+                query=urllib.parse.quote(query),
+                start=start_str,
+                end=end_str,
+            )
+            timeline_resp = self._session.get(timeline_url, timeout=REQUEST_TIMEOUT)
+            if timeline_resp.status_code != 200:
                 return 0
-            data = resp.json()
-            articles = data.get("articles", [])
-            return len(articles)
+            timeline_data = timeline_resp.json()
+            timeline = timeline_data.get("timeline", [])
+            return sum(int(point.get("value", 0)) for point in timeline)
         except Exception as exc:  # noqa: BLE001
             logger.warning(
                 "NewsSignalAgent: GDELT fetch failed for '%s': %s", keyword, exc
+            )
+            return 0
+
+    def _count_wikinews(self, event: Event) -> int:
+        """Count archival Wikinews search hits as a secondary news proxy."""
+        query_terms = event.keywords[:2] if event.keywords else [event.title]
+        total_hits = 0
+        for lang in ("zh", "en"):
+            hits = self._wikinews_hits(lang, query_terms)
+            total_hits += min(hits, 25)
+        return total_hits
+
+    def _wikinews_hits(self, lang: str, query_terms: List[str]) -> int:
+        """Return total search hits from one Wikinews language edition."""
+        query = " OR ".join(f'"{term}"' for term in query_terms)
+        params = {
+            "action": "query",
+            "list": "search",
+            "srsearch": query,
+            "srlimit": "1",
+            "format": "json",
+        }
+        url = WIKINEWS_API_URL.format(lang=lang)
+        try:
+            resp = self._session.get(url, params=params, timeout=REQUEST_TIMEOUT)
+            if resp.status_code != 200:
+                return 0
+            data = resp.json()
+            return int(data.get("query", {}).get("searchinfo", {}).get("totalhits", 0))
+        except Exception as exc:  # noqa: BLE001
+            logger.debug(
+                "NewsSignalAgent: Wikinews search failed for '%s' (%s): %s",
+                query,
+                lang,
+                exc,
             )
             return 0

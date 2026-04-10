@@ -81,8 +81,11 @@ app = FastAPI(
 
 # Serve the frontend from the `docs/` directory at the root path
 _FRONTEND_DIR = Path(__file__).parent.parent / "docs"
+_OUTPUT_DIR = _FRONTEND_DIR / "output"
 if _FRONTEND_DIR.is_dir():
     app.mount("/static", StaticFiles(directory=str(_FRONTEND_DIR)), name="static")
+if _OUTPUT_DIR.is_dir():
+    app.mount("/output", StaticFiles(directory=str(_OUTPUT_DIR)), name="output")
 
 
 # ---------------------------------------------------------------------------

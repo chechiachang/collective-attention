@@ -96,14 +96,17 @@ def compute_score(
     """
     Compute an explainable, normalised score from multi-source signals.
 
-    Each of the three signal components is scaled to **[0, 100/3]**, so the
-    combined score is always in **[0, 100]**:
+    The raw wiki/news/search components are first normalised into **[0, 1]**,
+    then weighted and re-scaled so the combined score stays in **[0, 100]**.
+    When weights differ, their relative shares are re-normalised instead of
+    simply multiplying the final score.
 
     ::
 
-        wiki_component   = wiki_weight   * log(wiki_views  + 1) / log(10_000_001) * (100/3)
-        news_component   = news_weight   * log(news_count  + 1) / log(10_001)     * (100/3)
-        search_component = search_weight * search_score / 100                      * (100/3)
+        weight_sum       = wiki_weight + news_weight + search_weight
+        wiki_component   = (wiki_weight / weight_sum)   * log(wiki_views + 1) / log(10_000_001) * 100
+        news_component   = (news_weight / weight_sum)   * log(news_count + 1) / log(10_001)     * 100
+        search_component = (search_weight / weight_sum) * search_score / 100                      * 100
         score            = wiki_component + news_component + search_component
 
     The ``+1`` guards against ``log(0)``.  The normalisation denominators are
@@ -122,16 +125,20 @@ def compute_score(
     search_weight : float
         Multiplier for the search-score component (default 1.0).
     """
+    weights = [max(0.0, wiki_weight), max(0.0, news_weight), max(0.0, search_weight)]
+    weight_sum = sum(weights) or 1.0
+
+    wiki_share = weights[0] / weight_sum
+    news_share = weights[1] / weight_sum
+    search_share = weights[2] / weight_sum
+
     wiki_component = (
-        wiki_weight * math.log(signals.wiki_views + 1) / _WIKI_LOG_MAX * _COMPONENT_MAX
+        wiki_share * math.log(signals.wiki_views + 1) / _WIKI_LOG_MAX * 100.0
     )
     news_component = (
-        news_weight * math.log(signals.news_count + 1) / _NEWS_LOG_MAX * _COMPONENT_MAX
+        news_share * math.log(signals.news_count + 1) / _NEWS_LOG_MAX * 100.0
     )
-    # search_score is already 0–100; scale to 0–(100/3) for equal weighting
-    search_component = (
-        search_weight * float(signals.search_score) / 100.0 * _COMPONENT_MAX
-    )
+    search_component = search_share * float(signals.search_score)
 
     total = wiki_component + news_component + search_component
 

@@ -18,8 +18,10 @@ Improvements over v1:
 from __future__ import annotations
 
 import hashlib
+import json
 import logging
 from datetime import date
+from pathlib import Path
 from typing import List, Optional
 
 from core.models import Event, Signals
@@ -101,6 +103,66 @@ def _make_id(title: str) -> str:
     return hashlib.md5(title.encode()).hexdigest()[:8]
 
 
+def _parse_seed_date(value: object) -> Optional[date]:
+    """Convert a JSON seed date into a ``date`` when present."""
+    if value in (None, ""):
+        return None
+    if isinstance(value, date):
+        return value
+    if isinstance(value, str):
+        return date.fromisoformat(value)
+    msg = f"Unsupported date value: {value!r}"
+    raise ValueError(msg)
+
+
+def _normalise_seed(seed: dict) -> dict:
+    """Validate and normalise one seed-event definition."""
+    title = str(seed.get("title", "")).strip()
+    if not title:
+        raise ValueError("Seed event is missing a non-empty 'title'")
+
+    raw_keywords = seed.get("keywords", [])
+    if not isinstance(raw_keywords, list) or not raw_keywords:
+        raise ValueError(f"Seed event '{title}' is missing a non-empty 'keywords' list")
+
+    keywords = [
+        str(keyword).strip() for keyword in raw_keywords if str(keyword).strip()
+    ]
+    if not keywords:
+        raise ValueError(f"Seed event '{title}' must contain at least one keyword")
+
+    return {
+        "title": title,
+        "keywords": keywords,
+        "start_date": _parse_seed_date(seed.get("start_date")),
+        "end_date": _parse_seed_date(seed.get("end_date")),
+    }
+
+
+def load_seed_events(seed_file: str) -> List[dict]:
+    """Load seed events from a JSON file.
+
+    Expected format:
+
+    [
+      {
+        "title": "1986年重大事件",
+        "keywords": ["關鍵字1", "關鍵字2"],
+        "start_date": "1986-01-01",
+        "end_date": "1986-01-03"
+      }
+    ]
+    """
+    path = Path(seed_file)
+    with path.open("r", encoding="utf-8") as seed_handle:
+        raw_data = json.load(seed_handle)
+
+    if not isinstance(raw_data, list):
+        raise ValueError("Seed file must contain a JSON array of events")
+
+    return [_normalise_seed(seed) for seed in raw_data]
+
+
 class EventDetectionAgent:
     """
     Detects events from seed data and/or RSS feeds.
@@ -119,9 +181,11 @@ class EventDetectionAgent:
         self,
         rss_url: Optional[str] = None,
         include_seeds: bool = True,
+        seed_file: Optional[str] = None,
     ):
         self.rss_url = rss_url
         self.include_seeds = include_seeds
+        self.seed_file = seed_file
 
     # ------------------------------------------------------------------
     # Public interface
@@ -129,9 +193,10 @@ class EventDetectionAgent:
 
     def detect(self) -> List[Event]:
         events: List[Event] = []
+        seeds = self._combined_seed_events()
 
-        if self.include_seeds:
-            for seed in SEED_EVENTS:
+        if seeds:
+            for seed in seeds:
                 event_id = _make_id(seed["title"])
                 event = Event(
                     id=event_id,
@@ -223,3 +288,26 @@ class EventDetectionAgent:
         except Exception as exc:  # noqa: BLE001
             logger.warning("RSS ingestion failed for %s: %s", url, exc)
             return []
+
+    def _combined_seed_events(self) -> List[dict]:
+        """Return the default and external seed catalogs, de-duplicated by title."""
+        combined: List[dict] = []
+        seen_titles: set[str] = set()
+
+        if self.include_seeds:
+            for seed in SEED_EVENTS:
+                title = seed["title"]
+                if title in seen_titles:
+                    continue
+                combined.append(seed)
+                seen_titles.add(title)
+
+        if self.seed_file:
+            for seed in load_seed_events(self.seed_file):
+                title = seed["title"]
+                if title in seen_titles:
+                    continue
+                combined.append(seed)
+                seen_titles.add(title)
+
+        return combined

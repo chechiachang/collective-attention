@@ -14,6 +14,7 @@ formula stays in one place.
 from __future__ import annotations
 
 import logging
+from datetime import date
 from typing import List
 
 from core.models import Event, compute_score
@@ -29,6 +30,20 @@ class ScoringAgent:
     attached to the event's score_breakdown field.
     """
 
+    def _weights_for_event(self, event: Event) -> tuple[float, float, float]:
+        """Return era-aware source weights for one event."""
+        start_date = event.start_date
+        if start_date is None:
+            return (0.5, 0.3, 0.2)
+
+        if start_date < date(2004, 1, 1):
+            return (0.75, 0.25, 0.0)
+
+        if start_date < date(2015, 7, 1):
+            return (0.6, 0.25, 0.15)
+
+        return (0.4, 0.35, 0.25)
+
     def score(self, event: Event) -> None:
         """
         Compute and attach score to event.
@@ -38,7 +53,13 @@ class ScoringAgent:
             logger.warning("ScoringAgent: no signals for '%s'", event.title)
             return
 
-        breakdown = compute_score(event.signals)
+        wiki_weight, news_weight, search_weight = self._weights_for_event(event)
+        breakdown = compute_score(
+            event.signals,
+            wiki_weight=wiki_weight,
+            news_weight=news_weight,
+            search_weight=search_weight,
+        )
         event.score_breakdown = breakdown
         event.score = breakdown.total
 
