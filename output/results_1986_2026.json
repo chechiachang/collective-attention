@@ -1,0 +1,1526 @@
+{
+  "generated_at": "2026-04-09T08:26:04.014131+00:00",
+  "total_events": 38,
+  "events": [
+    {
+      "id": "dfed4e97",
+      "title": "1999年921大地震",
+      "start_date": "1999-09-21",
+      "end_date": "1999-09-21",
+      "keywords": [
+        "921",
+        "集集地震",
+        "921大地震",
+        "南投地震",
+        "台灣地震"
+      ],
+      "canonical_wiki_title": "921大地震",
+      "wiki_redirect_pages": [
+        "集集地震",
+        "九二一大地震",
+        "921地震",
+        "九二一地震",
+        "集集大地震",
+        "921集集大地震",
+        "921 地震",
+        "921震災",
+        "1999年集集大地震",
+        "臺灣九二一大地震",
+        "1999年集集地震",
+        "九二一震災"
+      ],
+      "score": 81.8736,
+      "signals": {
+        "event_id": "dfed4e97",
+        "wiki_views": 6405945,
+        "news_count": 26,
+        "search_score": 0.1376
+      },
+      "score_breakdown": {
+        "wiki_component": 72.9277,
+        "news_component": 8.9459,
+        "search_component": 0.0,
+        "total": 81.8736,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "ebb52f36",
+      "title": "臺灣省戒嚴令解除",
+      "start_date": "1987-07-15",
+      "end_date": "1987-07-15",
+      "keywords": [
+        "解嚴",
+        "戒嚴",
+        "蔣經國",
+        "1987台灣",
+        "民主化"
+      ],
+      "canonical_wiki_title": "臺灣省戒嚴令",
+      "wiki_redirect_pages": [
+        "臺灣戒嚴令",
+        "台灣戒嚴令",
+        "台灣戒嚴",
+        "臺灣戒嚴",
+        "臺灣解嚴",
+        "台灣省戒嚴令",
+        "臺灣戒嚴時期",
+        "臺灣省政府臺灣省警備總司令部布告戒字第壹號",
+        "台灣解嚴",
+        "戒字第壹號",
+        "臺灣省警備總司令部佈告戒字第一號"
+      ],
+      "score": 79.9334,
+      "signals": {
+        "event_id": "ebb52f36",
+        "wiki_views": 4315815,
+        "news_count": 25,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 71.09,
+        "news_component": 8.8435,
+        "search_component": 0.0,
+        "total": 79.9334,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "e002de0e",
+      "title": "2003年SARS台灣疫情",
+      "start_date": "2003-03-14",
+      "end_date": "2003-07-05",
+      "keywords": [
+        "SARS",
+        "和平醫院",
+        "台灣疫情",
+        "嚴重急性呼吸道症候群",
+        "2003台灣"
+      ],
+      "canonical_wiki_title": "嚴重急性呼吸道症候群台灣疫情",
+      "wiki_redirect_pages": [
+        "2003台灣抗SARS紀實",
+        "嚴重急性呼吸系統綜合症台灣疫情",
+        "2003嚴重急性呼吸道症候群台灣疫情",
+        "嚴重急性呼吸道症候群臺灣疫情"
+      ],
+      "score": 77.2283,
+      "signals": {
+        "event_id": "e002de0e",
+        "wiki_views": 1628934,
+        "news_count": 50,
+        "search_score": 0.0826
+      },
+      "score_breakdown": {
+        "wiki_component": 66.5561,
+        "news_component": 10.6722,
+        "search_component": 0.0,
+        "total": 77.2283,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "fff6dde0",
+      "title": "1997年白曉燕命案",
+      "start_date": "1997-04-14",
+      "end_date": "1997-04-28",
+      "keywords": [
+        "白曉燕",
+        "白冰冰",
+        "命案",
+        "治安事件",
+        "1997台灣"
+      ],
+      "canonical_wiki_title": "白曉燕命案",
+      "wiki_redirect_pages": [
+        "白晓燕命案",
+        "白曉燕案",
+        "白曉燕",
+        "林春生",
+        "高天民"
+      ],
+      "score": 76.7632,
+      "signals": {
+        "event_id": "fff6dde0",
+        "wiki_views": 3606569,
+        "news_count": 10,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 70.2546,
+        "news_component": 6.5086,
+        "search_component": 0.0,
+        "total": 76.7632,
+        "explanation": "Very high wikipedia traffic; moderate news coverage; low search interest."
+      }
+    },
+    {
+      "id": "3e54f450",
+      "title": "1995至1996年台海危機",
+      "start_date": "1995-07-21",
+      "end_date": "1996-03-23",
+      "keywords": [
+        "台海危機",
+        "飛彈危機",
+        "1996台海",
+        "中國軍演",
+        "李登輝"
+      ],
+      "canonical_wiki_title": "台灣海峽飛彈危機",
+      "wiki_redirect_pages": [
+        "第三次台灣海峽危機",
+        "臺灣海峽飛彈危機",
+        "台海飛彈危機",
+        "第三次台湾海峡危机",
+        "海峽飛彈危機",
+        "第三次台海危机",
+        "1996年台海危机",
+        "臺海飛彈危機",
+        "台海飛彈演習危機",
+        "第三次臺灣海峽危機",
+        "勵新專案",
+        "台湾海峡导弹危机"
+      ],
+      "score": 76.7439,
+      "signals": {
+        "event_id": "3e54f450",
+        "wiki_views": 2174547,
+        "news_count": 25,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 67.9004,
+        "news_component": 8.8435,
+        "search_component": 0.0,
+        "total": 76.7439,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "01e74818",
+      "title": "2000年中華民國總統選舉",
+      "start_date": "2000-03-18",
+      "end_date": "2000-03-18",
+      "keywords": [
+        "2000總統大選",
+        "陳水扁",
+        "政黨輪替",
+        "宋楚瑜",
+        "連戰"
+      ],
+      "canonical_wiki_title": "2000年中華民國總統選舉",
+      "wiki_redirect_pages": [
+        "2000年臺灣總統大選",
+        "2000年台湾总统大选",
+        "2000年中华民国总统大选",
+        "2000年台灣總統大選",
+        "2000年中華民國總統大選",
+        "2000年中华民国总统选举"
+      ],
+      "score": 75.2004,
+      "signals": {
+        "event_id": "01e74818",
+        "wiki_views": 1526678,
+        "news_count": 26,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 66.2544,
+        "news_component": 8.9459,
+        "search_component": 0.0,
+        "total": 75.2004,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "c96f3886",
+      "title": "1990年野百合學運",
+      "start_date": "1990-03-16",
+      "end_date": "1990-03-22",
+      "keywords": [
+        "野百合學運",
+        "學生運動",
+        "國是會議",
+        "民主改革",
+        "1990台灣"
+      ],
+      "canonical_wiki_title": "野百合學運",
+      "wiki_redirect_pages": [
+        "台北學運",
+        "三月学运",
+        "野百合学运",
+        "台北学运",
+        "三一六學運",
+        "學運世代",
+        "野百合世代",
+        "三月學運",
+        "野百合運動",
+        "野百合同學會",
+        "「野百合腐爛，好臭」記者會"
+      ],
+      "score": 70.8924,
+      "signals": {
+        "event_id": "c96f3886",
+        "wiki_views": 1021285,
+        "news_count": 10,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 64.3837,
+        "news_component": 6.5086,
+        "search_component": 0.0,
+        "total": 70.8924,
+        "explanation": "Very high wikipedia traffic; moderate news coverage; low search interest."
+      }
+    },
+    {
+      "id": "bfbe4185",
+      "title": "2001年納莉颱風",
+      "start_date": "2001-09-16",
+      "end_date": "2001-09-19",
+      "keywords": [
+        "納莉颱風",
+        "台北淹水",
+        "颱風納莉",
+        "2001颱風",
+        "捷運淹水"
+      ],
+      "canonical_wiki_title": "颱風納莉 (2001年)",
+      "wiki_redirect_pages": [
+        "台风纳莉 (2001年)",
+        "颱風百合 (2001年)",
+        "九一七水災",
+        "強颱風百合 (2001年)",
+        "中度颱風納莉 (2001年)",
+        "2001年颱風納莉"
+      ],
+      "score": 70.2214,
+      "signals": {
+        "event_id": "bfbe4185",
+        "wiki_views": 685878,
+        "news_count": 16,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 62.5312,
+        "news_component": 7.6902,
+        "search_component": 0.0,
+        "total": 70.2214,
+        "explanation": "Very high wikipedia traffic; moderate news coverage; low search interest."
+      }
+    },
+    {
+      "id": "bc570b5f",
+      "title": "1996年中華民國總統選舉",
+      "start_date": "1996-03-23",
+      "end_date": "1996-03-23",
+      "keywords": [
+        "1996總統大選",
+        "首次民選總統",
+        "李登輝",
+        "台灣選舉",
+        "總統直選"
+      ],
+      "canonical_wiki_title": "1996年中華民國總統選舉",
+      "wiki_redirect_pages": [
+        "1996年台灣總統大選",
+        "1996年台湾总统大选",
+        "1996年中华民国总统大选",
+        "1996年臺灣總統大選",
+        "1996年中華民國總統大選",
+        "1996年中华民国总统选举"
+      ],
+      "score": 67.9661,
+      "signals": {
+        "event_id": "bc570b5f",
+        "wiki_views": 1161938,
+        "news_count": 2,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 64.9841,
+        "news_component": 2.982,
+        "search_component": 0.0,
+        "total": 67.9661,
+        "explanation": "Very high wikipedia traffic; low news coverage; low search interest."
+      }
+    },
+    {
+      "id": "529e590b",
+      "title": "太陽花學運",
+      "start_date": "2014-03-18",
+      "end_date": "2014-04-10",
+      "keywords": [
+        "太陽花",
+        "服貿",
+        "佔領立法院",
+        "學運",
+        "2014台灣"
+      ],
+      "canonical_wiki_title": "太陽花學運",
+      "wiki_redirect_pages": [
+        "台灣反兩岸服務貿易協定學生團體佔領中華民國立法院事件",
+        "318學運",
+        "318社運",
+        "反服貿運動",
+        "向日葵學運",
+        "太陽花運動",
+        "向日葵運動",
+        "318學潮",
+        "臺灣之春",
+        "學生發動佔領立院行政院活動",
+        "黑箱服贸",
+        "大腸花學運",
+        "大腸花運動"
+      ],
+      "score": 65.248,
+      "signals": {
+        "event_id": "529e590b",
+        "wiki_views": 3802299,
+        "news_count": 25,
+        "search_score": 0.0275
+      },
+      "score_breakdown": {
+        "wiki_component": 56.4004,
+        "news_component": 8.8435,
+        "search_component": 0.0041,
+        "total": 65.248,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "1b101882",
+      "title": "2012年中華民國總統選舉",
+      "start_date": "2012-01-14",
+      "end_date": "2012-01-14",
+      "keywords": [
+        "2012總統大選",
+        "馬英九",
+        "蔡英文",
+        "宋楚瑜",
+        "台灣選舉"
+      ],
+      "canonical_wiki_title": "2012年中華民國總統選舉",
+      "wiki_redirect_pages": [
+        "第十三任中华民国总统副总统选举",
+        "2012年中华民国总统选举",
+        "第十三任中華民國總統副總統選舉",
+        "2012年中華民國總統大選",
+        "第13屆中華民國總統選舉"
+      ],
+      "score": 62.872,
+      "signals": {
+        "event_id": "1b101882",
+        "wiki_views": 1956008,
+        "news_count": 26,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 53.926,
+        "news_component": 8.9459,
+        "search_component": 0.0,
+        "total": 62.872,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "53b8b9a5",
+      "title": "2014年九合一選舉",
+      "start_date": "2014-11-29",
+      "end_date": "2014-11-29",
+      "keywords": [
+        "九合一選舉",
+        "2014選舉",
+        "柯文哲",
+        "地方選舉",
+        "台灣選舉"
+      ],
+      "canonical_wiki_title": "2014年中華民國地方公職人員選舉",
+      "wiki_redirect_pages": [
+        "2014年中華民國直轄市市長暨市議員及縣市長暨縣市議員選舉",
+        "2014年中華民國縣市長暨縣市議員選舉",
+        "2014年中華民國七合一選舉",
+        "2014年台灣地方選舉",
+        "2014年七合一選舉",
+        "2014年九合一選舉",
+        "2014年中華民國直轄市市長暨市議員選舉",
+        "2014年台湾九合一选举",
+        "2014年中华民国地方选举",
+        "2014年九合一大選"
+      ],
+      "score": 62.8391,
+      "signals": {
+        "event_id": "53b8b9a5",
+        "wiki_views": 2413064,
+        "news_count": 19,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 54.7077,
+        "news_component": 8.1313,
+        "search_component": 0.0,
+        "total": 62.8391,
+        "explanation": "Very high wikipedia traffic; moderate news coverage; low search interest."
+      }
+    },
+    {
+      "id": "2f2fa5f0",
+      "title": "2008年中華民國總統選舉",
+      "start_date": "2008-03-22",
+      "end_date": "2008-03-22",
+      "keywords": [
+        "2008總統大選",
+        "馬英九",
+        "謝長廷",
+        "政黨輪替",
+        "台灣選舉"
+      ],
+      "canonical_wiki_title": "2008年中華民國總統選舉",
+      "wiki_redirect_pages": [
+        "2008年中華民國總統大選",
+        "2008年3月12日民進黨總統競選總部前騷亂事件",
+        "2008年中華民國第十二屆總統、副總統選舉",
+        "2008年中华民国总统选举",
+        "2008年台灣總統選舉",
+        "第12屆中華民國總統選舉"
+      ],
+      "score": 62.718,
+      "signals": {
+        "event_id": "2f2fa5f0",
+        "wiki_views": 1876781,
+        "news_count": 26,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 53.7721,
+        "news_component": 8.9459,
+        "search_component": 0.0,
+        "total": 62.718,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "2b25548a",
+      "title": "2004年中華民國總統選舉",
+      "start_date": "2004-03-20",
+      "end_date": "2004-03-20",
+      "keywords": [
+        "2004總統大選",
+        "陳水扁",
+        "連宋",
+        "開票爭議",
+        "台灣選舉"
+      ],
+      "canonical_wiki_title": "2004年中華民國總統選舉",
+      "wiki_redirect_pages": [
+        "2004年台湾总统选举",
+        "2004年台灣總統大選",
+        "2004年台湾总统大选",
+        "2004年中华民国总统大选",
+        "2004年中华民国总统选举",
+        "百萬人228牽手護台灣",
+        "2004年中華民國總統大選",
+        "2004年中華民國總統選擧",
+        "2004年中華民國總統副總統選舉"
+      ],
+      "score": 61.4522,
+      "signals": {
+        "event_id": "2b25548a",
+        "wiki_views": 1335762,
+        "news_count": 26,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 52.5063,
+        "news_component": 8.9459,
+        "search_component": 0.0,
+        "total": 61.4522,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "e1c2a0a6",
+      "title": "鄭捷事件",
+      "start_date": "2014-05-21",
+      "end_date": "2014-05-21",
+      "keywords": [
+        "鄭捷",
+        "捷運隨機殺人",
+        "板南線",
+        "台北捷運",
+        "2014台灣"
+      ],
+      "canonical_wiki_title": "鄭捷",
+      "wiki_redirect_pages": [
+        "鄭捷 (台灣)",
+        "郑捷",
+        "鄭捷 (臺灣)"
+      ],
+      "score": 61.3114,
+      "signals": {
+        "event_id": "e1c2a0a6",
+        "wiki_views": 2472736,
+        "news_count": 10,
+        "search_score": 0.0275
+      },
+      "score_breakdown": {
+        "wiki_component": 54.7987,
+        "news_component": 6.5086,
+        "search_component": 0.0041,
+        "total": 61.3114,
+        "explanation": "Very high wikipedia traffic; moderate news coverage; low search interest."
+      }
+    },
+    {
+      "id": "7035341f",
+      "title": "2011年塑化劑事件",
+      "start_date": "2011-05-23",
+      "end_date": "2011-06-30",
+      "keywords": [
+        "塑化劑",
+        "食品安全",
+        "起雲劑",
+        "黑心食品",
+        "2011台灣"
+      ],
+      "canonical_wiki_title": "2011年臺灣塑化劑事件",
+      "wiki_redirect_pages": [
+        "塑化劑事件",
+        "2011年台灣塑化劑事件",
+        "2011年臺灣食品安全問題事件",
+        "珍珠奶茶的塑化劑事件"
+      ],
+      "score": 61.0208,
+      "signals": {
+        "event_id": "7035341f",
+        "wiki_views": 1220082,
+        "news_count": 25,
+        "search_score": 0.055
+      },
+      "score_breakdown": {
+        "wiki_component": 52.1691,
+        "news_component": 8.8435,
+        "search_component": 0.0083,
+        "total": 61.0208,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "95010239",
+      "title": "2004年319槍擊案",
+      "start_date": "2004-03-19",
+      "end_date": "2004-03-19",
+      "keywords": [
+        "319槍擊案",
+        "陳水扁",
+        "呂秀蓮",
+        "2004大選",
+        "槍擊事件"
+      ],
+      "canonical_wiki_title": "三一九槍擊事件",
+      "wiki_redirect_pages": [
+        "3·19槍擊事件",
+        "扁呂槍擊事件",
+        "三一九枪击事件",
+        "3·19枪击事件",
+        "319槍擊案",
+        "三一九槍擊案",
+        "三一九槍擊疑案",
+        "319槍擊事件",
+        "三一九槍擊事件真相調查特別委員會",
+        "陳義雄",
+        "兩顆子彈",
+        "陳水扁槍擊案"
+      ],
+      "score": 60.7607,
+      "signals": {
+        "event_id": "95010239",
+        "wiki_views": 1109305,
+        "news_count": 26,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 51.8147,
+        "news_component": 8.9459,
+        "search_component": 0.0,
+        "total": 60.7607,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "69c77d0e",
+      "title": "2009年莫拉克風災",
+      "start_date": "2009-08-07",
+      "end_date": "2009-08-10",
+      "keywords": [
+        "莫拉克",
+        "八八風災",
+        "小林村",
+        "颱風",
+        "2009台灣"
+      ],
+      "canonical_wiki_title": "八八水災",
+      "wiki_redirect_pages": [
+        "新八七水災",
+        "把愛傳出去",
+        "88水災",
+        "莫拉克水災",
+        "八八风灾",
+        "88風災",
+        "莫拉克風災",
+        "2009年颱風莫拉克對臺灣的影響",
+        "2009年颱風莫拉克對台灣的影響"
+      ],
+      "score": 60.1706,
+      "signals": {
+        "event_id": "69c77d0e",
+        "wiki_views": 1451660,
+        "news_count": 14,
+        "search_score": 0.0275
+      },
+      "score_breakdown": {
+        "wiki_component": 52.816,
+        "news_component": 7.3505,
+        "search_component": 0.0041,
+        "total": 60.1706,
+        "explanation": "Very high wikipedia traffic; moderate news coverage; low search interest."
+      }
+    },
+    {
+      "id": "8af2c70d",
+      "title": "2014年高雄氣爆",
+      "start_date": "2014-07-31",
+      "end_date": "2014-08-01",
+      "keywords": [
+        "高雄氣爆",
+        "前鎮",
+        "苓雅",
+        "石化管線",
+        "2014台灣"
+      ],
+      "canonical_wiki_title": "2014年高雄氣爆事故",
+      "wiki_redirect_pages": [
+        "高雄前鎮瓦斯氣爆",
+        "2014高雄前鎮瓦斯氣爆事件",
+        "2014年高雄瓦斯氣爆事故",
+        "高雄氣爆事件",
+        "高雄燃氣爆炸事件",
+        "前鎮苓雅氣爆事件",
+        "2014年高雄氣爆事件",
+        "2014年台灣高雄氣爆事故",
+        "81氣爆事件",
+        "高雄前鎮苓雅氣爆事件",
+        "81氣爆",
+        "2014年臺灣高雄氣爆事故",
+        "731氣爆事件"
+      ],
+      "score": 60.0626,
+      "signals": {
+        "event_id": "8af2c70d",
+        "wiki_views": 1287162,
+        "news_count": 16,
+        "search_score": 0.0275
+      },
+      "score_breakdown": {
+        "wiki_component": 52.3683,
+        "news_component": 7.6902,
+        "search_component": 0.0041,
+        "total": 60.0626,
+        "explanation": "Very high wikipedia traffic; moderate news coverage; low search interest."
+      }
+    },
+    {
+      "id": "748bca5d",
+      "title": "2006年紅衫軍倒扁運動",
+      "start_date": "2006-09-09",
+      "end_date": "2006-10-10",
+      "keywords": [
+        "紅衫軍",
+        "倒扁",
+        "施明德",
+        "凱道",
+        "2006台灣"
+      ],
+      "canonical_wiki_title": "百萬人民倒扁運動",
+      "wiki_redirect_pages": [
+        "倒扁",
+        "挺扁",
+        "百萬人民反貪腐運動",
+        "2006年百萬人民倒扁運動",
+        "百萬人倒扁運動",
+        "百万人反贪腐运动",
+        "百万人民倒扁运动",
+        "倒扁活動",
+        "倒扁事件",
+        "天下围攻",
+        "百萬人民反貪腐活動",
+        "百萬人民倒扁活動",
+        "倒扁運動",
+        "反貪腐運動",
+        "倒扁總部",
+        "反貪腐倒扁總部",
+        "紅杉軍起義",
+        "百萬人民反貪倒扁運動",
+        "紅衫軍倒扁活動",
+        "紅衫軍倒扁運動",
+        "台灣紅衫軍之亂",
+        "臺灣紅衫軍之亂",
+        "倒扁紅衫軍",
+        "紅衫軍倒扁",
+        "台灣紅衫軍",
+        "紅衫軍之亂",
+        "倒扁紅衫軍運動"
+      ],
+      "score": 58.3856,
+      "signals": {
+        "event_id": "748bca5d",
+        "wiki_views": 602432,
+        "news_count": 25,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 49.5421,
+        "news_component": 8.8435,
+        "search_component": 0.0,
+        "total": 58.3856,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "99e1600f",
+      "title": "洪仲丘事件",
+      "start_date": "2013-07-04",
+      "end_date": "2013-08-03",
+      "keywords": [
+        "洪仲丘",
+        "軍中人權",
+        "白衫軍",
+        "國防部",
+        "2013台灣"
+      ],
+      "canonical_wiki_title": "洪仲丘事件",
+      "wiki_redirect_pages": [
+        "洪仲丘枉死事件",
+        "洪仲丘",
+        "洪仲丘案",
+        "洪下士悔過期間死亡案",
+        "洪仲丘暴斃事件",
+        "沈威志",
+        "何江忠",
+        "陳毅銘",
+        "徐信正",
+        "劉延俊",
+        "陳以人",
+        "范佐憲",
+        "陳毅勳",
+        "洪仲丘枉死案",
+        "洪下士冤死案",
+        "洪仲丘之死"
+      ],
+      "score": 57.7621,
+      "signals": {
+        "event_id": "99e1600f",
+        "wiki_views": 1482633,
+        "news_count": 5,
+        "search_score": 0.0275
+      },
+      "score_breakdown": {
+        "wiki_component": 52.8946,
+        "news_component": 4.8634,
+        "search_component": 0.0041,
+        "total": 57.7621,
+        "explanation": "Very high wikipedia traffic; low news coverage; low search interest."
+      }
+    },
+    {
+      "id": "1885b627",
+      "title": "2019冠狀病毒病臺灣疫情",
+      "start_date": "2020-01-21",
+      "end_date": "2022-12-31",
+      "keywords": [
+        "COVID-19",
+        "新冠肺炎",
+        "本土疫情",
+        "口罩",
+        "指揮中心"
+      ],
+      "canonical_wiki_title": "2019冠狀病毒病臺灣疫情",
+      "wiki_redirect_pages": [
+        "新型冠狀病毒肺炎事件臺灣情況",
+        "台湾地区新型冠状病毒肺炎疫情",
+        "臺灣新型冠狀病毒肺炎疫情",
+        "中華民國自由地區新型冠狀病毒肺炎疫情",
+        "2019年－2020年新型冠狀病毒肺炎事件對臺灣的影響",
+        "2019新型冠狀病毒台灣疫情",
+        "2019新型冠狀病毒臺灣疫情",
+        "2019冠狀病毒病台灣疫情",
+        "武漢肺炎台灣疫情",
+        "武漢肺炎臺灣疫情",
+        "嚴重特殊傳染性肺炎臺灣疫情",
+        "Covid19台灣疫情",
+        "嚴重特殊傳染性肺炎台灣疫情",
+        "嚴重特殊傳染性肺炎中華民國疫情",
+        "台灣武漢肺炎疫情",
+        "臺灣新冠病毒疫情",
+        "臺灣新冠病毒病疫情",
+        "COVID-19臺灣疫情",
+        "2019冠狀病毒病中華民國疫情"
+      ],
+      "score": 55.8072,
+      "signals": {
+        "event_id": "1885b627",
+        "wiki_views": 14058919,
+        "news_count": 50,
+        "search_score": 0.0826
+      },
+      "score_breakdown": {
+        "wiki_component": 40.8454,
+        "news_component": 14.9411,
+        "search_component": 0.0206,
+        "total": 55.8072,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "6d65561f",
+      "title": "2008年陳雲林訪台事件",
+      "start_date": "2008-11-03",
+      "end_date": "2008-11-07",
+      "keywords": [
+        "陳雲林",
+        "野草莓學運",
+        "訪台",
+        "集會遊行",
+        "2008台灣"
+      ],
+      "canonical_wiki_title": "陳雲林訪臺爭議",
+      "wiki_redirect_pages": [
+        "国宾饭店冲突",
+        "晶华酒店围困事件",
+        "围城游行",
+        "陳雲林事件",
+        "陳雲林訪臺爭議與衝突"
+      ],
+      "score": 55.1258,
+      "signals": {
+        "event_id": "6d65561f",
+        "wiki_views": 250957,
+        "news_count": 25,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 46.2823,
+        "news_component": 8.8435,
+        "search_component": 0.0,
+        "total": 55.1258,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "7dc47908",
+      "title": "2015年八仙樂園塵爆事故",
+      "start_date": "2015-06-27",
+      "end_date": "2015-06-27",
+      "keywords": [
+        "八仙塵爆",
+        "粉塵爆炸",
+        "新北",
+        "八仙樂園",
+        "2015台灣"
+      ],
+      "canonical_wiki_title": "八仙樂園彩色派對火災",
+      "wiki_redirect_pages": [
+        "2015八仙樂園派對爆炸事故",
+        "2015年八仙樂園派對爆炸事故",
+        "八仙樂園爆炸案",
+        "八仙樂園爆炸事件",
+        "八仙塵爆",
+        "呂忠吉",
+        "八仙樂園火災",
+        "八仙燒燙傷事件",
+        "2015年八仙樂園派對粉塵爆炸事故",
+        "八仙樂園彩色派對",
+        "八仙樂園派對粉塵爆炸事故",
+        "八仙火災",
+        "八仙樂園塵爆",
+        "八仙樂園塵爆事件",
+        "2015年新北水樂園火災"
+      ],
+      "score": 53.7836,
+      "signals": {
+        "event_id": "7dc47908",
+        "wiki_views": 379276,
+        "news_count": 8,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 47.8196,
+        "news_component": 5.964,
+        "search_component": 0.0,
+        "total": 53.7836,
+        "explanation": "Very high wikipedia traffic; moderate news coverage; low search interest."
+      }
+    },
+    {
+      "id": "0b5e7d1f",
+      "title": "2024年中華民國總統選舉",
+      "start_date": "2024-01-13",
+      "end_date": "2024-01-13",
+      "keywords": [
+        "2024總統大選",
+        "賴清德",
+        "侯友宜",
+        "柯文哲",
+        "台灣選舉"
+      ],
+      "canonical_wiki_title": "2024年中華民國總統選舉",
+      "wiki_redirect_pages": [
+        "2024年台湾地区领导人选举",
+        "2024年中华民国总统大选",
+        "中華民國第16任總統、副總統選舉",
+        "2024年中华民国总统选举",
+        "中华民国第16任总统、副总统选举",
+        "第16屆中華民國總統選舉"
+      ],
+      "score": 48.5167,
+      "signals": {
+        "event_id": "0b5e7d1f",
+        "wiki_views": 2107522,
+        "news_count": 25,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 36.1358,
+        "news_component": 12.3809,
+        "search_component": 0.0,
+        "total": 48.5167,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "61896684",
+      "title": "2020年中華民國總統選舉",
+      "start_date": "2020-01-11",
+      "end_date": "2020-01-11",
+      "keywords": [
+        "2020總統大選",
+        "蔡英文",
+        "韓國瑜",
+        "宋楚瑜",
+        "反送中"
+      ],
+      "canonical_wiki_title": "2020年中華民國總統選舉",
+      "wiki_redirect_pages": [
+        "2020年台灣總統選舉",
+        "2020年台湾地区领导人选举",
+        "2020台湾大选",
+        "2020年中華民國總統大選",
+        "第15屆中華民國總統選舉"
+      ],
+      "score": 47.4547,
+      "signals": {
+        "event_id": "61896684",
+        "wiki_views": 1373809,
+        "news_count": 25,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 35.0739,
+        "news_component": 12.3809,
+        "search_component": 0.0,
+        "total": 47.4547,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "3c9339fa",
+      "title": "2016年中華民國總統選舉",
+      "start_date": "2016-01-16",
+      "end_date": "2016-01-16",
+      "keywords": [
+        "2016總統大選",
+        "蔡英文",
+        "朱立倫",
+        "時代力量",
+        "台灣選舉"
+      ],
+      "canonical_wiki_title": "2016年中華民國總統選舉",
+      "wiki_redirect_pages": [
+        "2016年台灣總統大選",
+        "護柱者聯盟",
+        "2016年台湾地区领导人选举",
+        "台灣就是力量",
+        "2016年中华民国总统大选",
+        "2016年台湾总统选举",
+        "第14屆中華民國總統選舉"
+      ],
+      "score": 46.3364,
+      "signals": {
+        "event_id": "3c9339fa",
+        "wiki_views": 875415,
+        "news_count": 25,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 33.9555,
+        "news_component": 12.3809,
+        "search_component": 0.0,
+        "total": 46.3364,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "454fb9f9",
+      "title": "2022年九合一選舉",
+      "start_date": "2022-11-26",
+      "end_date": "2022-11-26",
+      "keywords": [
+        "2022九合一",
+        "地方選舉",
+        "蔣萬安",
+        "民進黨",
+        "國民黨"
+      ],
+      "canonical_wiki_title": "2022年中華民國地方公職人員選舉",
+      "wiki_redirect_pages": [
+        "2022年九合一大選",
+        "2022年九合一選舉",
+        "2022九合一選舉"
+      ],
+      "score": 45.6772,
+      "signals": {
+        "event_id": "454fb9f9",
+        "wiki_views": 539130,
+        "news_count": 29,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 32.7525,
+        "news_component": 12.9247,
+        "search_component": 0.0,
+        "total": 45.6772,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "3483a22e",
+      "title": "2018年九合一選舉",
+      "start_date": "2018-11-24",
+      "end_date": "2018-11-24",
+      "keywords": [
+        "2018九合一",
+        "韓國瑜",
+        "地方選舉",
+        "公投",
+        "台灣選舉"
+      ],
+      "canonical_wiki_title": "2018年中華民國地方公職人員選舉",
+      "wiki_redirect_pages": [
+        "2018年九合一選舉",
+        "2018年台灣地方選舉",
+        "2018九合一選舉",
+        "107年九合一選舉",
+        "2018年九合一大選",
+        "2018年台灣地方公職人員選舉",
+        "2018年台灣九合一選舉",
+        "1124",
+        "2018年九合一地方選舉"
+      ],
+      "score": 45.6749,
+      "signals": {
+        "event_id": "3483a22e",
+        "wiki_views": 670591,
+        "news_count": 25,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 33.294,
+        "news_component": 12.3809,
+        "search_component": 0.0,
+        "total": 45.6749,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "2b2c5284",
+      "title": "2021年太魯閣號出軌事故",
+      "start_date": "2021-04-02",
+      "end_date": "2021-04-02",
+      "keywords": [
+        "太魯閣號",
+        "台鐵408",
+        "清水隧道",
+        "出軌",
+        "2021台灣"
+      ],
+      "canonical_wiki_title": "北迴線太魯閣號列車出軌事故",
+      "wiki_redirect_pages": [
+        "2021年臺鐵太魯閣號出軌事故",
+        "台鐵太魯閣號事故",
+        "台鐵太魯閣號408車次出軌事故",
+        "2021年太魯閣號出軌事故",
+        "0402太魯閣事故",
+        "太魯閣號翻車意外",
+        "太魯閣號列車脫軌事故",
+        "2021年太魯閣列車出軌事故",
+        "太魯閣號列車出軌事故",
+        "花莲县0402交通事故",
+        "李義祥",
+        "太魯閣列車脫軌事故",
+        "台鐵北迴線太魯閣號列車事故事件",
+        "臺鐵北迴線太魯閣號列車事故事件",
+        "台铁“太鲁阁号”列车脱轨事故",
+        "江沛峰",
+        "楊琪蓁",
+        "陳妍頤",
+        "張恩翔",
+        "2021年太魯閣號列車出軌事故",
+        "楊沂涓",
+        "楊民仰",
+        "0402臺鐵第408次車清水隧道重大鐵道事故",
+        "袁淳修",
+        "0402臺鐵408次事故",
+        "李維綱",
+        "2021年花蓮列車出軌事故"
+      ],
+      "score": 45.6347,
+      "signals": {
+        "event_id": "2b2c5284",
+        "wiki_views": 659821,
+        "news_count": 25,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 33.2539,
+        "news_component": 12.3809,
+        "search_component": 0.0,
+        "total": 45.6347,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "b952ae3e",
+      "title": "2022年裴洛西訪台",
+      "start_date": "2022-08-02",
+      "end_date": "2022-08-10",
+      "keywords": [
+        "裴洛西",
+        "佩洛西",
+        "訪台",
+        "台海危機",
+        "軍演"
+      ],
+      "canonical_wiki_title": "2022年南西·裴洛西訪問台灣",
+      "wiki_redirect_pages": [
+        "佩洛西访台",
+        "裴洛西訪問台灣",
+        "裴洛西訪台",
+        "2022年蘭茜·佩洛西訪問台灣",
+        "2022年南希·佩洛西访问台湾",
+        "佩洛西窜访台湾",
+        "佩洛西窜台",
+        "裴洛西訪問臺灣",
+        "裴洛西來台",
+        "2022年佩洛西访问台湾",
+        "2022年裴洛西訪問台灣"
+      ],
+      "score": 43.6538,
+      "signals": {
+        "event_id": "b952ae3e",
+        "wiki_views": 296174,
+        "news_count": 25,
+        "search_score": 0.0275
+      },
+      "score_breakdown": {
+        "wiki_component": 31.266,
+        "news_component": 12.3809,
+        "search_component": 0.0069,
+        "total": 43.6538,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "e1863468",
+      "title": "普悠瑪列車出軌事故",
+      "start_date": "2018-10-21",
+      "end_date": "2018-10-21",
+      "keywords": [
+        "普悠瑪",
+        "出軌",
+        "台鐵",
+        "宜蘭",
+        "2018台灣"
+      ],
+      "canonical_wiki_title": "普悠瑪號列車出軌事故",
+      "wiki_redirect_pages": [
+        "新馬車站重大事故",
+        "6432次普悠瑪出軌事故",
+        "臺鐵新馬列車傾覆事故",
+        "臺鐵6432次列車傾覆事故",
+        "2018年宜蘭列車翻覆事故",
+        "2018年宜蘭列車出軌事故",
+        "2018年臺鐵宜蘭列車出軌事故",
+        "2018年宜蘭臺鐵列車出軌事故",
+        "2018年宜蘭普悠瑪列車出軌事故",
+        "普悠瑪列車出軌事故",
+        "2018年普悠瑪列車出軌事故",
+        "2018年普悠瑪號出軌事故",
+        "普悠瑪號脫軌事故",
+        "普悠瑪號翻車意外",
+        "1021普悠瑪事故",
+        "2018年臺鐵6432次列車新馬站內正線出軌事故",
+        "普悠瑪號列車脫軌事故",
+        "2018年普悠瑪號列車出軌事故",
+        "臺鐵宜蘭線普悠瑪號列車出軌事故",
+        "2018年普悠瑪列車脫軌事故",
+        "2018年普悠瑪號列車脫軌事故",
+        "臺鐵6432次列車新馬站內正線出軌事故"
+      ],
+      "score": 42.7425,
+      "signals": {
+        "event_id": "e1863468",
+        "wiki_views": 204581,
+        "news_count": 25,
+        "search_score": 0.055
+      },
+      "score_breakdown": {
+        "wiki_component": 30.3478,
+        "news_component": 12.3809,
+        "search_component": 0.0138,
+        "total": 42.7425,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "acaa3577",
+      "title": "2024年國會改革爭議與青鳥行動",
+      "start_date": "2024-05-17",
+      "end_date": "2024-06-21",
+      "keywords": [
+        "青鳥行動",
+        "國會改革",
+        "立法院",
+        "程序正義",
+        "2024台灣"
+      ],
+      "canonical_wiki_title": "青鳥行動",
+      "wiki_redirect_pages": [
+        "「民主倒退，公民搶救」521行動",
+        "民主倒退，公民搶救",
+        "民主倒退 公民搶救",
+        "民主倒退公民搶救",
+        "521行動",
+        "521公民運動",
+        "521學生運動",
+        "521學運",
+        "藐視國會運動",
+        "太陽花2.0",
+        "國會濫權，民主倒退，公民搶救，立院集結",
+        "我藐視國會",
+        "反國會擴權行動",
+        "521集會",
+        "521公民集會",
+        "521遊行",
+        "反國會擴權運動",
+        "反立法院擴權行動",
+        "沒有討論，不是民主",
+        "沒有討論不是民主",
+        "沒有討論 不是民主",
+        "2024年青鳥行動",
+        "青鳥運動",
+        "青鳥東行動",
+        "反滥权护民主",
+        "反立法院擴權運動"
+      ],
+      "score": 42.4875,
+      "signals": {
+        "event_id": "acaa3577",
+        "wiki_views": 165720,
+        "news_count": 27,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 29.825,
+        "news_component": 12.6625,
+        "search_component": 0.0,
+        "total": 42.4875,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "1098e7b6",
+      "title": "2016年華航空服員罷工",
+      "start_date": "2016-06-24",
+      "end_date": "2016-06-25",
+      "keywords": [
+        "華航罷工",
+        "空服員",
+        "勞動事件",
+        "桃園空服員",
+        "2016台灣"
+      ],
+      "canonical_wiki_title": "2016年中華航空空服員罷工事件",
+      "wiki_redirect_pages": [
+        "2016年華航空服員罷工行動",
+        "2016年華航空服員罷工案",
+        "2016年華航空服員罷工事件",
+        "105年中華航空空服員罷工事件",
+        "2016年中華航空空服員罷工"
+      ],
+      "score": 41.862,
+      "signals": {
+        "event_id": "1098e7b6",
+        "wiki_views": 144273,
+        "news_count": 25,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 29.4811,
+        "news_component": 12.3809,
+        "search_component": 0.0,
+        "total": 41.862,
+        "explanation": "Very high wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "e7ecd89d",
+      "title": "2024年花蓮地震",
+      "start_date": "2024-04-03",
+      "end_date": "2024-04-03",
+      "keywords": [
+        "2024花蓮地震",
+        "0403",
+        "強震",
+        "台灣地震",
+        "天王星大樓"
+      ],
+      "canonical_wiki_title": "2024年花蓮地震",
+      "wiki_redirect_pages": [
+        "2024年4月3日花莲地震",
+        "2024年4月3日花蓮地震",
+        "2024年4月花莲地震",
+        "四零三大地震",
+        "403花蓮大地震",
+        "2024年4月花蓮地震",
+        "2024年花莲地震",
+        "2024年普悠瑪號列車出軌事故"
+      ],
+      "score": 40.6281,
+      "signals": {
+        "event_id": "e7ecd89d",
+        "wiki_views": 654455,
+        "news_count": 6,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 33.2336,
+        "news_component": 7.3945,
+        "search_component": 0.0,
+        "total": 40.6281,
+        "explanation": "Very high wikipedia traffic; moderate news coverage; low search interest."
+      }
+    },
+    {
+      "id": "c12e6bf9",
+      "title": "2018年花蓮地震",
+      "start_date": "2018-02-06",
+      "end_date": "2018-02-06",
+      "keywords": [
+        "花蓮地震",
+        "0206",
+        "雲門翠堤",
+        "台灣地震",
+        "2018台灣"
+      ],
+      "canonical_wiki_title": "2018年花莲地震",
+      "wiki_redirect_pages": [
+        "2018年2月花蓮地震",
+        "2018年花蓮地震"
+      ],
+      "score": 39.7898,
+      "signals": {
+        "event_id": "c12e6bf9",
+        "wiki_views": 144925,
+        "news_count": 14,
+        "search_score": 0.0275
+      },
+      "score_breakdown": {
+        "wiki_component": 29.4923,
+        "news_component": 10.2907,
+        "search_component": 0.0069,
+        "total": 39.7898,
+        "explanation": "Very high wikipedia traffic; moderate news coverage; low search interest."
+      }
+    },
+    {
+      "id": "836ca502",
+      "title": "2021年513及517全臺停電",
+      "start_date": "2021-05-13",
+      "end_date": "2021-05-17",
+      "keywords": [
+        "大停電",
+        "513停電",
+        "517停電",
+        "台電",
+        "供電危機"
+      ],
+      "canonical_wiki_title": "2021年興達發電廠停機事故",
+      "wiki_redirect_pages": [
+        "513全臺大停電",
+        "513停電事故",
+        "513大停電事故"
+      ],
+      "score": 39.2749,
+      "signals": {
+        "event_id": "836ca502",
+        "wiki_views": 50867,
+        "news_count": 25,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 26.894,
+        "news_component": 12.3809,
+        "search_component": 0.0,
+        "total": 39.2749,
+        "explanation": "High wikipedia traffic; high news coverage; low search interest."
+      }
+    },
+    {
+      "id": "380356ff",
+      "title": "2016年高雄美濃地震",
+      "start_date": "2016-02-06",
+      "end_date": "2016-02-06",
+      "keywords": [
+        "美濃地震",
+        "台南維冠",
+        "0206地震",
+        "高雄地震",
+        "2016台灣"
+      ],
+      "canonical_wiki_title": "2016年高雄美濃地震",
+      "wiki_redirect_pages": [
+        "2016年高雄地震",
+        "2016年南臺灣大地震",
+        "2016年高雄美浓地震",
+        "美濃地震",
+        "2016年高雄美濃大地震",
+        "高雄美濃大地震",
+        "26大地震"
+      ],
+      "score": 35.4693,
+      "signals": {
+        "event_id": "380356ff",
+        "wiki_views": 299600,
+        "news_count": 2,
+        "search_score": 0.0
+      },
+      "score_breakdown": {
+        "wiki_component": 31.2945,
+        "news_component": 4.1748,
+        "search_component": 0.0,
+        "total": 35.4693,
+        "explanation": "Very high wikipedia traffic; low news coverage; low search interest."
+      }
+    }
+  ]
+}

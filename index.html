@@ -51,6 +51,7 @@
     #controls {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: 12px;
       padding: 12px 32px;
       background: #131722;
@@ -58,6 +59,41 @@
     #controls label { font-size: 0.85rem; color: #94a3b8; }
     #n-slider { accent-color: #3b82f6; }
     #n-label  { font-size: 0.85rem; color: #60a5fa; min-width: 28px; }
+    #data-source {
+      min-width: 220px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+    }
+    .timeline-controls {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+      padding-left: 8px;
+      border-left: 1px solid #334155;
+    }
+    #timeline-zoom { accent-color: #38bdf8; }
+    #timeline-zoom-label {
+      font-size: 0.8rem;
+      color: #7dd3fc;
+      min-width: 68px;
+    }
+    #timeline-year-filter {
+      min-width: 132px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+    }
+    .control-spacer {
+      margin-left: auto;
+    }
 
     main { padding: 24px 32px; max-width: 1100px; margin: 0 auto; }
 
@@ -155,6 +191,121 @@
 
     /* ── Timeline view ─────────────────────────────────────────────── */
     #timeline-view { display: none; }
+    .timeline-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding: 12px 14px;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.84));
+      color: #cbd5e1;
+      font-size: 0.82rem;
+    }
+    .timeline-summary strong {
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+    .timeline-overview {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .timeline-density-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: #cbd5e1;
+      font-size: 0.8rem;
+    }
+    .timeline-density-chart {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(56px, 1fr));
+      gap: 10px;
+      align-items: end;
+      min-height: 132px;
+      padding: 14px 12px 10px;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(23, 32, 51, 0.94), rgba(15, 23, 42, 0.94));
+    }
+    .timeline-density-bar {
+      border: 1px solid #334155;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.7);
+      color: #cbd5e1;
+      padding: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .timeline-density-bar:hover {
+      border-color: #38bdf8;
+      transform: translateY(-1px);
+    }
+    .timeline-density-bar.active {
+      border-color: #60a5fa;
+      background: rgba(30, 64, 175, 0.22);
+      box-shadow: inset 0 0 0 1px rgba(96, 165, 250, 0.2);
+    }
+    .timeline-density-year {
+      display: block;
+      color: #f8fafc;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+    .timeline-density-count {
+      display: block;
+      font-size: 0.7rem;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+    .timeline-density-track {
+      position: relative;
+      height: 54px;
+      border-radius: 8px;
+      background: #0b1220;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .timeline-density-fill {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 8px 8px 0 0;
+      background: linear-gradient(180deg, #38bdf8, #1d4ed8);
+    }
+    .timeline-density-score {
+      display: block;
+      font-size: 0.68rem;
+      color: #7dd3fc;
+    }
+    .timeline-filter-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #334155;
+      background: #0f172a;
+    }
+    .timeline-clear-btn {
+      border: 1px solid #334155;
+      border-radius: 999px;
+      background: transparent;
+      color: #cbd5e1;
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .timeline-clear-btn:hover {
+      border-color: #60a5fa;
+    }
 
     /* vis-timeline dark theme overrides */
     .vis-timeline { border-color: #334155 !important; background: #131722 !important; }
@@ -217,6 +368,19 @@
       header, main, #controls, .tabs { padding-left: 16px; padding-right: 16px; }
       .event-card .card-header { flex-wrap: wrap; }
       .event-card .date-badge { margin-left: 0; }
+      .timeline-controls {
+        margin-left: 0;
+        width: 100%;
+        padding-left: 0;
+        border-left: 0;
+      }
+      .control-spacer {
+        margin-left: 0;
+      }
+      .timeline-summary {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   </style>
   <!-- vis-timeline: proper event timeline that avoids position:absolute stacking-context issues -->
@@ -241,10 +405,27 @@
 </div>
 
 <div id="controls">
+  <label for="data-source">Dataset:</label>
+  <select id="data-source" onchange="onDataSourceChange(this.value)">
+    <option value="auto">Auto: live API, then bundled fallback</option>
+    <option value="live">Live API</option>
+    <option value="recent">Bundled recent 2014-2024</option>
+    <option value="historical">Bundled historical 1986-2026</option>
+  </select>
   <label for="n-slider">Top N events:</label>
   <input id="n-slider" type="range" min="3" max="20" value="10" oninput="onNChange(this.value)" />
   <span id="n-label">10</span>
-  <button class="tab-btn" style="margin-left:auto" onclick="loadData()">↻ Refresh</button>
+  <div id="timeline-controls" class="timeline-controls">
+    <label for="timeline-year-filter">Year:</label>
+    <select id="timeline-year-filter" onchange="onTimelineYearFilterChange(this.value)">
+      <option value="all">All years</option>
+    </select>
+    <label for="timeline-zoom">Timeline zoom:</label>
+    <input id="timeline-zoom" type="range" min="12" max="96" value="40" oninput="onTimelineZoomChange(this.value)" />
+    <span id="timeline-zoom-label">40 px/mo</span>
+    <button class="tab-btn" onclick="fitTimeline()">Fit Range</button>
+  </div>
+  <button class="tab-btn control-spacer" onclick="loadData()">↻ Refresh</button>
 </div>
 
 <main>
@@ -263,6 +444,32 @@ let topN        = 10;
 let _visTimeline = null;      // vis-timeline instance (created lazily, cached)
 let _visItems    = null;      // vis-timeline DataSet (kept for incremental updates)
 let _tlEvents    = [];        // events currently shown in the timeline (for click handler)
+let timelineZoom = 40;
+let currentSource = 'auto';
+let currentSourceLabel = 'Auto';
+let yearJumpOffsets = {};
+let currentTimelineYear = 'all';
+
+const DATA_SOURCE_OPTIONS = {
+  auto: [
+    { url: '/events/top?n=100&sort=attention', label: 'Live API' },
+    { url: '/output/results.json', label: 'Bundled recent 2014-2024' },
+    { url: '/output/results_1986_2026.json', label: 'Bundled historical 1986-2026' },
+    { url: 'output/results.json', label: 'Bundled recent 2014-2024' },
+    { url: 'output/results_1986_2026.json', label: 'Bundled historical 1986-2026' },
+  ],
+  live: [
+    { url: '/events/top?n=100&sort=attention', label: 'Live API' },
+  ],
+  recent: [
+    { url: '/output/results.json', label: 'Bundled recent 2014-2024' },
+    { url: 'output/results.json', label: 'Bundled recent 2014-2024' },
+  ],
+  historical: [
+    { url: '/output/results_1986_2026.json', label: 'Bundled historical 1986-2026' },
+    { url: 'output/results_1986_2026.json', label: 'Bundled historical 1986-2026' },
+  ],
+};
 
 /* ────────────────────────────────────────────────────────────────────────
    Data loading
@@ -271,33 +478,32 @@ async function loadData() {
   setStatus('Loading…');
   showSpinner();
 
-  // Try the live API first, fall back to the bundled output/results.json.
-  // Request 50 events so the slider (max 20) always has enough data.
-  // The API allows up to 100; results are sliced client-side by topN.
-  const sources = [
-    `/events/top?n=50&sort=attention`,
-    `output/results.json`,
-  ];
+  const sources = DATA_SOURCE_OPTIONS[currentSource] || DATA_SOURCE_OPTIONS.auto;
 
   let data = null;
+  let loadedLabel = currentSourceLabel;
   for (const src of sources) {
     try {
-      const res = await fetch(src);
+      const res = await fetch(src.url);
       if (!res.ok) continue;
       data = await res.json();
-      if (data && (data.events || data.events === null)) break;
+      if (data && (data.events || data.events === null)) {
+        loadedLabel = src.label;
+        break;
+      }
     } catch (_) { /* try next */ }
   }
 
   if (!data || !Array.isArray(data.events)) {
-    setStatus('⚠️  Could not load event data. Is the API server running?');
+    setStatus('⚠️  Could not load event data from the selected source.');
     document.getElementById('ranking-view').innerHTML = '';
     document.getElementById('timeline-view').innerHTML = '';
     return;
   }
 
   allEvents = data.events;
-  setStatus(`Showing top ${Math.min(topN, allEvents.length)} of ${allEvents.length} events`);
+  currentSourceLabel = loadedLabel;
+  syncTopNSlider();
   render();
 }
 
@@ -306,10 +512,22 @@ async function loadData() {
    ──────────────────────────────────────────────────────────────────────── */
 function render() {
   const events = allEvents.slice(0, topN);
-  setStatus(`Showing top ${events.length} of ${allEvents.length} events`);
+  setStatus(`${currentSourceLabel} · showing ${events.length} of ${allEvents.length} events`);
 
   renderRanking(events);
+  syncTimelineYearFilter(events);
   renderTimeline(events);
+}
+
+function syncTopNSlider() {
+  const slider = document.getElementById('n-slider');
+  const nextMax = Math.max(1, allEvents.length || 20);
+  const nextMin = Math.min(3, nextMax);
+  slider.max = String(nextMax);
+  slider.min = String(nextMin);
+  topN = Math.min(Math.max(topN, nextMin), nextMax);
+  slider.value = String(topN);
+  document.getElementById('n-label').textContent = String(topN);
 }
 
 function maxScore(events) {
@@ -380,71 +598,102 @@ function renderRanking(events) {
 }
 
 function renderTimeline(events) {
+  yearJumpOffsets = {};
+
+  // Sort chronologically; undated events go last
+  const sorted = [...events].sort((a, b) => {
+    if (!a.start_date && !b.start_date) return 0;
+    if (!a.start_date) return 1;
+    if (!b.start_date) return -1;
+    return a.start_date.localeCompare(b.start_date);
+  });
+
   const mx = maxScore(events);
-  const datedEvents   = events.filter(e => e.start_date);
-  const undatedEvents = events.filter(e => !e.start_date);
+  const PX_PER_MONTH = timelineZoom;
 
-  // Keep a module-level snapshot so the click handler always sees current events
-  // (the click handler is registered only once; closing over `events` directly
-  // would capture a stale list when topN changes and renderTimeline is re-called)
-  _tlEvents = events;
-
+  const datedEvents = sorted.filter(e => e.start_date);
+  const filterYear = currentTimelineYear;
+  const filteredDatedEvents = filterYear === 'all'
+    ? datedEvents
+    : datedEvents.filter(e => e.start_date.slice(0, 4) === filterYear);
+  const undatedEvents = filterYear === 'all'
+    ? sorted.filter(e => !e.start_date)
+    : [];
+  const shownEvents = [...filteredDatedEvents, ...undatedEvents];
   const tlContainer = document.getElementById('timeline-view');
+  const overview = buildTimelineOverview(datedEvents);
 
-  // (Re-)create sub-mounts when the container was cleared by showSpinner/error
-  if (!document.getElementById('vis-tl-mount')) {
-    if (_visTimeline) { _visTimeline.destroy(); _visTimeline = null; _visItems = null; }
-    tlContainer.innerHTML =
-      '<div id="vis-tl-mount" style="margin-bottom:16px"></div>' +
-      '<div id="tl-detail-panel"></div>' +
-      '<div id="tl-undated-mount"></div>';
+  if (_visTimeline) {
+    _visTimeline.destroy();
+    _visTimeline = null;
+    _visItems = null;
+  }
+  _tlEvents = shownEvents;
+
+  // Fallback when no event has a date
+  if (!filteredDatedEvents.length && !undatedEvents.length) {
+    tlContainer.innerHTML = `
+      ${overview}
+      <div class="timeline-summary">
+        <span><strong>Range</strong> no dated events in this filter</span>
+        <span><strong>Events</strong> 0 shown</span>
+      </div>`;
+    return;
   }
 
-  // Clear any previously open detail card when events change (e.g. slider)
-  document.getElementById('tl-detail-panel').innerHTML = '';
+  const sortedDates = filteredDatedEvents.map(e => e.start_date).sort();
+  const firstDate = sortedDates.length ? new Date(sortedDates[0]) : new Date(2013, 0, 1);
+  const lastDate = sortedDates.length ? new Date(sortedDates[sortedDates.length - 1]) : new Date(2025, 11, 31);
+  const paddingMonths = Math.max(1, Math.round(120 / Math.max(12, timelineZoom)));
+  const windowStart = new Date(firstDate.getFullYear(), firstDate.getMonth() - paddingMonths, 1);
+  const windowEnd = new Date(lastDate.getFullYear(), lastDate.getMonth() + paddingMonths + 1, 0);
+  const rangeLabel = `${windowStart.getFullYear()}/${windowStart.getMonth() + 1} → ${windowEnd.getFullYear()}/${windowEnd.getMonth() + 1}`;
+  const datedLabel = `${filteredDatedEvents.length} dated · ${undatedEvents.length} undated`;
 
-  const visItemsData = datedEvents.map(e => ({
-    id: e.id,
-    content: `<span class="vis-item-title">${escHtml(e.title)}</span>`,
-    start: e.start_date,
-    ...(e.end_date && e.end_date !== e.start_date ? { end: e.end_date } : {}),
-  }));
+  tlContainer.innerHTML = `
+    <div class="timeline-summary">
+      <span><strong>Range</strong> ${rangeLabel}</span>
+      <span><strong>Zoom</strong> level ${timelineZoom}</span>
+      <span><strong>Events</strong> ${datedLabel}</span>
+    </div>
+    ${overview}
+    <div id="vis-tl-mount" style="margin-bottom:16px"></div>
+    <div id="tl-detail-panel"></div>
+    <div id="tl-undated-mount"></div>`;
 
-  if (!_visTimeline) {
-    _visItems = new vis.DataSet(visItemsData);
-    const mount = document.getElementById('vis-tl-mount');
-    const sortedDates = datedEvents.map(e => e.start_date).sort();
-    const startWin = sortedDates.length
-      ? new Date(new Date(sortedDates[0]).getFullYear() - 1, 0, 1)
-      : new Date(2013, 0, 1);
-    const endWin = sortedDates.length
-      ? new Date(new Date(sortedDates[sortedDates.length - 1]).getFullYear() + 1, 11, 31)
-      : new Date(2025, 11, 31);
-    _visTimeline = new vis.Timeline(mount, _visItems, {
-      height: '380px',
-      start: startWin,
-      end: endWin,
-      orientation: { axis: 'top' },
-      zoomKey: 'ctrlKey',
-      showCurrentTime: false,
-      selectable: true,
-    });
-    _visTimeline.on('click', function (props) {
-      // Read _tlEvents so clicks always reflect the latest renderTimeline call
-      const curMx = maxScore(_tlEvents);
-      if (props.item) {
-        toggleTimelineDetail(props.item, _tlEvents, curMx);
-      } else {
-        document.getElementById('tl-detail-panel').innerHTML = '';
-        _visTimeline.setSelection([]);
-      }
-    });
-  } else {
-    _visItems.clear();
-    _visItems.add(visItemsData);
-  }
+  const visItemsData = filteredDatedEvents.map(e => {
+    yearJumpOffsets[e.start_date.slice(0, 4)] = {
+      start: new Date(e.start_date),
+      end: new Date((e.end_date && e.end_date !== e.start_date) ? e.end_date : e.start_date),
+    };
+    return {
+      id: e.id,
+      content: `<span class="vis-item-title">${escHtml(e.title)}</span>`,
+      start: e.start_date,
+      ...(e.end_date && e.end_date !== e.start_date ? { end: e.end_date } : {}),
+    };
+  });
 
-  // Undated events listed below the vis-timeline widget
+  _visItems = new vis.DataSet(visItemsData);
+  _visTimeline = new vis.Timeline(document.getElementById('vis-tl-mount'), _visItems, {
+    height: `${Math.max(320, 260 + timelineZoom * 2)}px`,
+    start: windowStart,
+    end: windowEnd,
+    orientation: { axis: 'top' },
+    zoomKey: 'ctrlKey',
+    showCurrentTime: false,
+    selectable: true,
+  });
+  _visTimeline.on('click', function (props) {
+    const curMx = maxScore(_tlEvents);
+    if (props.item) {
+      toggleTimelineDetail(props.item, _tlEvents, curMx);
+    } else {
+      document.getElementById('tl-detail-panel').innerHTML = '';
+      _visTimeline.setSelection([]);
+    }
+  });
+
   const undatedMount = document.getElementById('tl-undated-mount');
   if (undatedEvents.length) {
     undatedMount.innerHTML =
@@ -457,7 +706,6 @@ function renderTimeline(events) {
 
 function toggleTimelineDetail(eventId, events, mx) {
   const panel = document.getElementById('tl-detail-panel');
-  // Toggle: clicking the same item a second time collapses the detail panel
   if (panel.querySelector(`[id="${CSS.escape('card-' + eventId)}"]`)) {
     panel.innerHTML = '';
     if (_visTimeline) _visTimeline.setSelection([]);
@@ -467,12 +715,74 @@ function toggleTimelineDetail(eventId, events, mx) {
   if (!event) return;
   if (_visTimeline) _visTimeline.setSelection([eventId]);
   panel.innerHTML = buildCard(event, null, mx);
-  // Use querySelector scoped to the panel to avoid matching the ranking-view
-  // card that shares the same id — document.getElementById returns the first
-  // match in document order, which would be the (hidden) ranking card.
   const card = panel.querySelector(`[id="${CSS.escape('card-' + eventId)}"]`);
   if (card) card.classList.add('expanded');
-  if (typeof panel.scrollIntoView === 'function') panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  if (typeof panel.scrollIntoView === 'function') {
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function buildTimelineOverview(events) {
+  if (!events.length) return '';
+
+  const yearStats = new Map();
+  for (const event of events) {
+    const year = event.start_date.slice(0, 4);
+    const existing = yearStats.get(year) || { count: 0, score: 0 };
+    existing.count += 1;
+    existing.score += event.score || 0;
+    yearStats.set(year, existing);
+  }
+
+  const orderedStats = Array.from(yearStats.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+  const maxCount = Math.max(...orderedStats.map(([, stat]) => stat.count), 1);
+  const activeLabel = currentTimelineYear === 'all' ? 'All years' : currentTimelineYear;
+
+  return `<div class="timeline-overview">
+    <div class="timeline-density-header">
+      <span class="timeline-filter-badge">Year filter: <strong>${activeLabel}</strong></span>
+      ${currentTimelineYear === 'all'
+        ? ''
+        : '<button class="timeline-clear-btn" onclick="clearTimelineYearFilter()">Show all years</button>'}
+    </div>
+    <div class="timeline-density-chart">${orderedStats
+    .map(([year, stat]) => `
+      <button class="timeline-density-bar ${currentTimelineYear === year ? 'active' : ''}" onclick="focusTimelineYear('${year}')">
+        <span class="timeline-density-year">${year}</span>
+        <span class="timeline-density-count">${stat.count} event${stat.count === 1 ? '' : 's'}</span>
+        <span class="timeline-density-track">
+          <span class="timeline-density-fill" style="height:${Math.max(10, Math.round((stat.count / maxCount) * 100))}%"></span>
+        </span>
+        <span class="timeline-density-score">attention ${stat.score.toFixed(1)}</span>
+      </button>`)
+    .join('')}</div>
+  </div>`;
+}
+
+function jumpToTimelineYear(year) {
+  const range = yearJumpOffsets[year];
+  if (!range || !_visTimeline) return;
+
+  const start = new Date(range.start.getFullYear(), 0, 1);
+  const end = new Date(range.end.getFullYear(), 11, 31);
+  _visTimeline.setWindow(start, end, { animation: true });
+}
+
+function focusTimelineYear(year) {
+  if (currentTimelineYear === year) {
+    clearTimelineYearFilter();
+    return;
+  }
+  currentTimelineYear = year;
+  syncTimelineYearSelect();
+  render();
+  jumpToTimelineYear(year);
+}
+
+function clearTimelineYearFilter() {
+  currentTimelineYear = 'all';
+  syncTimelineYearSelect();
+  render();
 }
 
 /* ────────────────────────────────────────────────────────────────────────
@@ -482,6 +792,8 @@ function switchView(view) {
   currentView = view;
   document.getElementById('ranking-view').style.display  = (view === 'ranking')  ? 'block' : 'none';
   document.getElementById('timeline-view').style.display = (view === 'timeline') ? 'block' : 'none';
+  document.getElementById('timeline-controls').style.display = (view === 'timeline') ? 'flex' : 'none';
+  document.querySelector('.control-spacer').style.marginLeft = (view === 'timeline') ? '0' : 'auto';
   document.getElementById('btn-ranking').classList.toggle('active',  view === 'ranking');
   document.getElementById('btn-timeline').classList.toggle('active', view === 'timeline');
   // vis-timeline needs an explicit redraw after its container transitions from
@@ -497,6 +809,44 @@ function toggleCard(id) {
 function onNChange(val) {
   topN = parseInt(val, 10);
   document.getElementById('n-label').textContent = val;
+  render();
+}
+
+function onDataSourceChange(val) {
+  currentSource = val;
+  currentSourceLabel = document.getElementById('data-source').selectedOptions[0].textContent;
+  currentTimelineYear = 'all';
+  loadData();
+}
+
+function onTimelineYearFilterChange(val) {
+  currentTimelineYear = val;
+  render();
+}
+
+function onTimelineZoomChange(val) {
+  timelineZoom = parseInt(val, 10);
+  setTimelineZoomLabel();
+  render();
+}
+
+function fitTimeline() {
+  const events = allEvents
+    .slice(0, topN)
+    .filter(e => e.start_date)
+    .filter(e => currentTimelineYear === 'all' || e.start_date.slice(0, 4) === currentTimelineYear)
+    .sort((a, b) => a.start_date.localeCompare(b.start_date));
+  if (!events.length) return;
+
+  const first = events[0].start_date;
+  const last = events[events.length - 1].start_date;
+  const totalMonths = Math.max(1,
+    (parseInt(last.slice(0, 4), 10) - parseInt(first.slice(0, 4), 10)) * 12 +
+    (parseInt(last.slice(5, 7), 10) - parseInt(first.slice(5, 7), 10)) + 2
+  );
+  timelineZoom = Math.max(12, Math.min(96, Math.round(1800 / totalMonths)));
+  document.getElementById('timeline-zoom').value = String(timelineZoom);
+  setTimelineZoomLabel();
   render();
 }
 
@@ -524,10 +874,36 @@ function fmtNum(n) {
   return Number(n).toLocaleString();
 }
 
+function syncTimelineYearFilter(events) {
+  const select = document.getElementById('timeline-year-filter');
+  const years = Array.from(new Set(events
+    .filter(e => e.start_date)
+    .map(e => e.start_date.slice(0, 4)))).sort();
+
+  const options = ['<option value="all">All years</option>']
+    .concat(years.map(year => `<option value="${year}">${year}</option>`));
+  select.innerHTML = options.join('');
+
+  if (currentTimelineYear !== 'all' && !years.includes(currentTimelineYear)) {
+    currentTimelineYear = 'all';
+  }
+  syncTimelineYearSelect();
+}
+
+function syncTimelineYearSelect() {
+  document.getElementById('timeline-year-filter').value = currentTimelineYear;
+}
+
+function setTimelineZoomLabel() {
+  document.getElementById('timeline-zoom-label').textContent = `zoom ${timelineZoom}`;
+}
+
 /* ────────────────────────────────────────────────────────────────────────
    Boot
    ──────────────────────────────────────────────────────────────────────── */
 switchView('ranking');
+setTimelineZoomLabel();
+document.getElementById('data-source').value = currentSource;
 loadData();
 </script>
 </body>
