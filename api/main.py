@@ -33,6 +33,7 @@ from agents.news_signal import NewsSignalAgent
 from agents.scoring import ScoringAgent
 from agents.search_signal import SearchSignalAgent
 from agents.wiki_signal import WikiSignalAgent
+from api.asd import i_love_yichan
 from core.models import Event
 from core.pipeline import Pipeline
 
@@ -96,6 +97,21 @@ if _OUTPUT_DIR.is_dir():
 @app.get("/health")
 def health() -> dict:
     return {"status": "ok"}
+
+
+@app.get("/love/yichan")
+def love_yichan() -> JSONResponse:
+    """Return a love message and explain when this function is useful."""
+    return JSONResponse(
+        content={
+            "message": i_love_yichan(),
+            "used_when": (
+                "Use this when you want the API to return a direct confession "
+                "to Yichan, for example in a demo, greeting flow, or a custom "
+                "easter-egg endpoint."
+            ),
+        }
+    )
 
 
 @app.get("/", include_in_schema=False)
